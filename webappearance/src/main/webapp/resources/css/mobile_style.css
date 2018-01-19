@@ -1,0 +1,225 @@
+@font-face {
+	font-family: 'poller_oneregular';
+	src: url('../fonts/pollerone/pollerone-webfont.eot');
+	src: url('../fonts/pollerone/pollerone-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('../fonts/pollerone/pollerone-webfont.woff') format('woff'),
+		 url('../fonts/pollerone/pollerone-webfont.ttf') format('truetype'),
+		 url('../fonts/pollerone/pollerone-webfont.svg#poller_oneregular') format('svg');
+}
+@font-face {
+	font-family: 'leckerli_oneregular';
+	src: url('../fonts/leckerlione/leckerlione-regular-webfont.eot');
+	src: url('../fonts/leckerlione/leckerlione-regular-webfont.eot?#iefix') format('embedded-opentype'),
+		 url('../fonts/leckerlione/leckerlione-regular-webfont.woff') format('woff'),
+		 url('../fonts/leckerlione/leckerlione-regular-webfont.ttf') format('truetype'),
+		 url('../fonts/leckerlione/leckerlione-regular-webfont.svg#leckerli_oneregular') format('svg');
+}
+
+body {
+	background: #fff;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: normal;
+	line-height: 1;
+	margin: 0;
+	min-width: auto;
+	padding: 0;
+}
+p {
+	color: #252525;
+	line-height: 24px;
+	margin: 0;
+	padding: 0;
+}
+p a {
+	color: #252525;
+	text-decoration: underline;
+}
+p a:hover {
+	color: #898989;
+}
+header {
+	margin: 0 auto;
+	padding: 30px 0 36px;
+	text-align: center;
+	width: auto;
+}
+
+nav ul {
+	margin: 0;
+	padding: 42px 0 0;
+}
+nav ul li {
+	display: inline;
+	list-style: none;
+	margin: 0;
+	padding: 0 13px;
+}
+nav ul li a {
+	color: #252525;
+	display: inline-block;
+	font-family: "Arial Black", Gadget, sans-serif;
+	font-size: 10px;
+	font-weight: normal;
+	margin: 0;
+	padding: 0 0 3px;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+nav ul li a:hover, #header ul li.selected a {
+	color: #24B40F;
+}
+
+select {
+	background: #fff;
+	color: #000;
+	font-family: "Arial Black", Gadget, sans-serif;
+	font-size: 10px;
+	text-transform: uppercase;
+	border-color: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  	appearance: none;
+}
+
+.menu_list {
+	display: inline-block;
+
+}
+
+header h1 {
+	color: #000;
+	display: inline;
+	font-family: poller_oneregular;
+	font-size: 20px;
+	font-weight: normal;
+	margin: 0;
+	padding: 0;
+	text-transform: uppercase;
+}
+header h1 span {
+	background: #fff;	
+	display: inline-block;
+	padding: 7px 20px 4px;
+}
+#body div.registration_group {
+	margin-bottom: 25px;
+}
+#body {
+	margin: 0;
+	padding: 0 0 30px;
+	text-align: center;
+}
+#body h2 {
+	color: #fff;
+	display: inline;
+	font-family: poller_oneregular;
+	font-size: 15px;
+	font-weight: normal;
+	margin: 0;
+	padding: 0;
+	text-transform: uppercase;
+}
+#body h2 span {
+	background: #252525;
+	display: inline-block;
+	padding: 10px 22px 7px;
+}
+#body form {
+	margin: 0 auto;
+	padding: 24px 0 0;
+	width: auto;
+}
+#body form input, #body form textarea {
+	border: 2px solid #252525;
+	color: #252525;	
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	font-weight: normal;
+	margin: 0 0 10px;
+	padding: 8px 8px;
+	text-align: center;
+	width: auto;
+}
+.error_message {
+	display: block;
+}
+#body form textarea {
+	height: 175px;
+	overflow: auto;
+	resize: none;
+}
+#body form #send {
+	background: #252525;
+	color: #fff;
+	font-family: "Arial Black", Gadget, sans-serif;
+	font-size: 13px;
+	font-weight: normal;
+	display: inline-block;
+	padding: 8px 16px;
+	width: auto;
+}
+#body form #send:hover {
+	background: #88B04B;
+	color: #fff;
+	cursor: pointer;
+}
+footer {
+	background: #252525;
+	margin: 0;
+	padding: 36px 0 42px;
+}
+footer article {
+	margin: 0 auto;
+	overflow: hidden;
+	padding: 0;
+	width: 80%;
+}
+footer article h4 {
+	color: #fff;
+	float: left;
+	line-height: 44px;
+	margin: 0 0 0 10px;
+	padding: 0;
+}
+footer article h4:before {
+	content: "\00a9 "; 
+	color: #fff;
+	padding-right: 5px;
+}
+footer article ul {
+	display: block;
+	float: right;
+	margin: 0;
+	overflow: hidden;
+	padding: 0;
+	/*width: 256px;*/
+}
+footer article ul li {
+	display: block;
+	float: left;
+	list-style: none;
+	margin: 0 10px;
+	padding: 0;
+	width: 44px;
+}
+footer article ul li a {
+	background: url(../images/icons.jpg) no-repeat 0 0;
+	display: block;
+	height: 44px;
+	margin: 0;
+	padding: 0;
+	width: 44px;
+}
+footer article ul li #googleplus {
+	background-position: 0 -88px;
+}
+footer article ul li #googleplus:hover {
+	background-position: -44px -88px;
+}
+footer article ul li #vk {
+	background-position: 0 -132px;
+}
+footer article ul li #vk:hover {
+	background-position: -44px -132px;
+}
