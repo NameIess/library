@@ -64,10 +64,10 @@ public class LibraryServlet extends HttpServlet {
     }
 
     private void forward(HttpServletRequest request, HttpServletResponse response, String page) throws ServletException, IOException {
-        page = buildUrl(page);
-        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);
+        String forwardPage = buildUrl(page);
+        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(forwardPage);
         dispatcher.forward(request, response);
-        Log.debug("Forward to: " + page);
+        Log.debug("Forward to: " + forwardPage);
     }
 
     private void redirect(String page, HttpServletResponse response) throws IOException {

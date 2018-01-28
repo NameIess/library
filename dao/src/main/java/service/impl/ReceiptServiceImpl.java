@@ -100,10 +100,8 @@ public class ReceiptServiceImpl implements ReceiptService {
         try {
             receiptDao.startTransaction();
             bookDao.startTransaction();
-            Log.debug("Amount before update : = " + availableBookQuantity);
-            Log.debug("Ordered amount : = " + orderedBookQuantity);
-            Integer updatedAmount = calculateTransferAmount(orderedBookQuantity, availableBookQuantity, statusId);
-            Log.debug("Updated amount : = " + updatedAmount);
+            int updatedAmount = calculateTransferAmount(orderedBookQuantity, availableBookQuantity, statusId);
+            Log.debug("Amount before update = " + availableBookQuantity + ". Ordered amount = " + orderedBookQuantity + ". Updated amount = " + updatedAmount + ".");
             if (updatedAmount < 0) {
                 receiptDao.rollback();
                 bookDao.rollback();
@@ -118,12 +116,10 @@ public class ReceiptServiceImpl implements ReceiptService {
             Status status = new Status();
             status.setId(statusId);
             receipt.setStatus(status);
-            Log.debug("Receipt before status update : = " + receipt);
-            receiptDao.updateStatusById(receipt);
 
+            receiptDao.updateStatusById(receipt);
             receiptDao.commit();
             bookDao.commit();
-            Log.debug("Receipt after book transfer : = " + receipt);
         } catch (PersistException e) {
             receiptDao.rollback();
             bookDao.rollback();

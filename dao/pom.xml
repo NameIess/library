@@ -11,17 +11,32 @@
 
     <artifactId>dao</artifactId>
 
+    <properties>
+        <log4j-core.version>2.10.0</log4j-core.version>
+        <mysql-connector-java.version>5.1.38</mysql-connector-java.version>
+        <commons-codec.version>1.4</commons-codec.version>
+    </properties>
+
     <dependencies>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.38</version>
+            <version>${mysql-connector-java.version}</version>
         </dependency>
+
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.4</version>
+            <version>${commons-codec.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j-core.version}</version>
+        </dependency>
+
     </dependencies>
 
 </project>

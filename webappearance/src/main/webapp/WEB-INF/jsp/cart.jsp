@@ -26,7 +26,7 @@
                     <input type="checkbox" name="is_subscribtion" id="subscription" value="true" title="${subscribe}" checked>
                     <label for="subscription">${subscribe}</label>
                 </div>
-                <p>${current_time} <time:info-time locale="${sessionScope.locale}"/></p>
+                <p>${current_time} <b><time:info-time locale="${sessionScope.locale}"/></b></p>
                 <input type="date" name="" id="date_pick">
                 <input class="timepicker" name="" type="text" id="time_pick">
                 <strong id="cart_message_date" class="message cart_strong"></strong>

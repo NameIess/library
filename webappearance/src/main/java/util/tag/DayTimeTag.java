@@ -16,6 +16,9 @@ public class DayTimeTag extends TagSupport {
     private static final String EASTERN_EUROPE_DATE_PATTERN = "dd.MM.yyyy HH:mm:ss";
     private static final String UNITED_KINGDOM_DATE_PATTERN = "dd/MM/yyyy hh:mm:ss a";
     private static final String GERMAN_DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    private static final String RUSSIAN_LOCALE_ALIAS = "ru";
+    private static final String ENGLISH_LOCALE_ALIAS = "en";
+    private static final String GERMAN_LOCALE_ALIAS = "de";
     private String locale;
 
     public String getLocale() {
@@ -41,24 +44,18 @@ public class DayTimeTag extends TagSupport {
 
 
     private String setDateTimeByLocale(String locale) {
-        Log.info("CURRENT LOCALE INSIDE DAYTIME: " + getLocale());
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = null;
-        if (locale.equals("ru")) {
+        if (locale.equals(RUSSIAN_LOCALE_ALIAS)) {
             formatter = DateTimeFormatter.ofPattern(EASTERN_EUROPE_DATE_PATTERN);
-        } else if (locale.startsWith("en") || locale.isEmpty()) {
+        } else if (locale.startsWith(ENGLISH_LOCALE_ALIAS) || locale.isEmpty()) {
             formatter = DateTimeFormatter.ofPattern(UNITED_KINGDOM_DATE_PATTERN);
-        } else if (locale.startsWith("de")) {
+        } else if (locale.startsWith(GERMAN_LOCALE_ALIAS)) {
             formatter = DateTimeFormatter.ofPattern(GERMAN_DATE_PATTERN);
         }
 
         String formatDateTime = now.format(formatter);
-
-        Log.info("CURRENT TIME IS: " + formatDateTime);
-        String time = "<b> " + formatDateTime + "</b>";
-        Log.info("HTML TIME IS: " + time);
-
-        return time;
+        return formatDateTime;
     }
 
     @Override
