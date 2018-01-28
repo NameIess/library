@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>User registration validator test suite</title>
+    <link rel="stylesheet" href="//code.jquery.com/qunit/qunit-1.14.0.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.min.js"></script>
+    <script src="//code.jquery.com/qunit/qunit-1.14.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mockjax/1.6.2/jquery.mockjax.min.js"></script>
+
+    <!-- Файл вашего проекта  -->
+    <script type="text/javascript" src="resources/user_validator.js"></script>
+    <!-- Файл ваших тестов -->
+    <script type="text/javascript" src="registration_validation_test.js"></script>
+</head>
+
+<body>
+
+<h1 id="qunit-header">Test Suite</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+
+<h2 id="qunit-userAgent"></h2>
+
+<ol id="qunit-tests"></ol>
+
+<div id="qunit-dom-testing" style="display: none">
+
+    <form class="validated_form" name="registration_form" method="POST"
+          action="${pageContext.request.contextPath}/libraryDispatcher">
+        <input type="hidden" name="command" value="${command}"/>
+
+        <div class="registration_group">
+            <input type="text" class="verifiable" name="name" title="${first_name}"
+                   value="${requestScope.edit_user.name}" id="name" placeholder="${first_name}" autofocus>
+            <strong class="message"></strong>
+        </div>
+        <div class="registration_group">
+            <input type="text" class="verifiable" name="second_name" title="${second_name}"
+                   value="${requestScope.edit_user.secondName}" id="second_name" placeholder="${second_name}">
+            <strong class="message"></strong>
+        </div>
+        <div class="registration_group">
+            <input type="text" class="verifiable" name="surname" title="${surname}"
+                   value="${requestScope.edit_user.surname}" id="surname" placeholder="${surname}">
+            <strong class="message"></strong>
+        </div>
+
+        <div class="registration_group">
+            <input type="text" class="verifiable" name="email" title="${email_address}"
+                   value="${requestScope.edit_user.email}" id="email" placeholder="${email_address}">
+            <strong class="message"></strong>
+        </div>
+        <div class="registration_group">
+            <input type="password" class="verifiable" name="password" title="${password}" id="password"
+                   placeholder="${password}">
+            <strong class="message"></strong>
+        </div>
+        <div class="registration_group">
+            <input type="password" class="verifiable" name="confirm_password" title="${confirm_password}"
+                   id="confirm_password" placeholder="${confirm_password}">
+            <strong class="message"></strong>
+        </div>
+
+        <div class="registration_group">
+            <input type="text" name="phone_number" title="${phone_number}" value="${requestScope.edit_user.phoneNumber}"
+                   id="phone_number" placeholder="${phone_number}">
+            <strong class="message"></strong>
+        </div>
+        <div class="registration_group">
+            <input type="text" class="verifiable not_null" name="passport_series" title="${passport_series}"
+                   value="${requestScope.edit_user.passportSeries}" id="passport_series"
+                   placeholder="${passport_series}">
+            <strong class="message"></strong>
+        </div>
+
+        <div class="registration_group">
+            <input type="text" class="verifiable not_null" name="passport_number" title="${passport_number}"
+                   value="${requestScope.edit_user.passportNumber}" id="passport_number"
+                   placeholder="${passport_number}">
+            <strong class="message"></strong>
+        </div>
+
+        <input class="submit_button" type="submit" title="${submit}" value="${submit}">
+    </form>
+
+</div>
+</body>
+</html>

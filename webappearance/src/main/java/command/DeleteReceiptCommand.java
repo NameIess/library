@@ -2,15 +2,13 @@ package command;
 
 import command.exception.ActionException;
 import model.Receipt;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import service.ReceiptService;
 import service.exception.ServiceException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 public class DeleteReceiptCommand extends AbstractActionCommand {
-    private static final Logger Log = LogManager.getLogger(DeleteReceiptCommand.class);
     private ReceiptService receiptService;
 
     public DeleteReceiptCommand(ReceiptService receiptService) {
@@ -22,12 +20,13 @@ public class DeleteReceiptCommand extends AbstractActionCommand {
         Receipt receipt = parseRequestData(request);
         try {
             receiptService.delete(receipt);
+            HttpSession session = request.getSession(false);
+            session.setAttribute(Message.SUCCESS.toString(), Message.RECEIPT_DELETED.toString());
         } catch (ServiceException e) {
             throw new ActionException("Error within DeleteReceiptCommand execute(): " + e.getMessage(), e);
-
         }
 
-        String path = getHomePageByRole(request);
+        String path = buildPathMap(Page.REDIRECT, Page.RESULT);
         return path;
     }
 

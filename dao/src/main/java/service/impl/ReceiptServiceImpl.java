@@ -10,6 +10,7 @@ import model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.ReceiptService;
+import service.exception.BusinessException;
 import service.exception.ServiceException;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class ReceiptServiceImpl implements ReceiptService {
             receiptDao.startTransaction();
             receiptDao.create(receipt);
             receiptDao.commit();
+            Log.info("Receipt " + receipt + " has been saved to DB");
         } catch (PersistException e) {
             receiptDao.rollback();
             throw new ServiceException("Error within ReceiptServiceImpl save(): " + e.getMessage(), e);
@@ -42,6 +44,7 @@ public class ReceiptServiceImpl implements ReceiptService {
     public void delete(Receipt receipt) throws ServiceException {
         try {
             receiptDao.delete(receipt);
+            Log.info("Receipt " + receipt + " has been removed from DB");
         } catch (PersistException e) {
             throw new ServiceException("Error within ReceiptServiceImpl delete(): " + e.getMessage(), e);
         } finally {
@@ -59,6 +62,7 @@ public class ReceiptServiceImpl implements ReceiptService {
         } finally {
             receiptDao.releaseConnection();
         }
+        Log.info("Receipt " + receipt + " has been received from DB by ID - " + id);
         return receipt;
     }
 
@@ -72,6 +76,7 @@ public class ReceiptServiceImpl implements ReceiptService {
         } finally {
             receiptDao.releaseConnection();
         }
+        Log.info("Receipts " + receiptList + " have been received from DB");
         return receiptList;
     }
 
@@ -86,15 +91,29 @@ public class ReceiptServiceImpl implements ReceiptService {
         } finally {
             receiptDao.releaseConnection();
         }
-
+        Log.info("Receipts " + receiptList + " have been received from DB by User - " + user);
         return receiptList;
     }
 
     @Override
-    public void transferBook(Long receiptId, Long statusId, Long bookId, Integer orderedBookQuantity, Integer availableBookQuantity) throws ServiceException {
+    public void transferBook(Long receiptId, Long statusId, Long bookId, Integer orderedBookQuantity, Integer availableBookQuantity) throws ServiceException, BusinessException {
         try {
             receiptDao.startTransaction();
             bookDao.startTransaction();
+            Log.debug("Amount before update : = " + availableBookQuantity);
+            Log.debug("Ordered amount : = " + orderedBookQuantity);
+            Integer updatedAmount = calculateTransferAmount(orderedBookQuantity, availableBookQuantity, statusId);
+            Log.debug("Updated amount : = " + updatedAmount);
+            if (updatedAmount < 0) {
+                receiptDao.rollback();
+                bookDao.rollback();
+                throw new BusinessException("Try to order more books than available");
+            }
+            Book book = new Book();
+            book.setId(bookId);
+            book.setAmount(updatedAmount);
+            bookDao.updateAmountById(book);
+
             Receipt receipt = receiptDao.findOne(receiptId);
             Status status = new Status();
             status.setId(statusId);
@@ -102,16 +121,9 @@ public class ReceiptServiceImpl implements ReceiptService {
             Log.debug("Receipt before status update : = " + receipt);
             receiptDao.updateStatusById(receipt);
 
-            Book book = new Book();
-            book.setId(bookId);
-            Log.debug("Amount before update : =" + availableBookQuantity);
-            Log.debug("Ordered amount : = " + orderedBookQuantity);
-            Integer updatedAmount = calculateTransferAmount(orderedBookQuantity, availableBookQuantity, statusId);
-            Log.debug("Updated amount : = " + updatedAmount);
-            book.setAmount(updatedAmount);
-            bookDao.updateAmountById(book);
             receiptDao.commit();
             bookDao.commit();
+            Log.debug("Receipt after book transfer : = " + receipt);
         } catch (PersistException e) {
             receiptDao.rollback();
             bookDao.rollback();
@@ -122,14 +134,14 @@ public class ReceiptServiceImpl implements ReceiptService {
         }
     }
 
-    private int calculateTransferAmount(int orderedBookQuantity, int availableBookQuantity, Long statusId) {
+    private int calculateTransferAmount(int orderedBookQuantity, int availableBookQuantity, Long statusId) throws BusinessException {
         int updatedAmount = 0;
-        if (statusId == Status.STATUS_TRANSFERRED_ID) {
-            updatedAmount = availableBookQuantity - orderedBookQuantity;
-        } else if (statusId == Status.STATUS_REJECTED_ID) {
+        if (statusId.equals(Status.STATUS_REJECTED_ID)) {
             updatedAmount = availableBookQuantity;
-        } else if (statusId == Status.STATUS_RETURNED_ID) {
+        } else if (statusId.equals(Status.STATUS_RETURNED_ID)) {
             updatedAmount = availableBookQuantity + orderedBookQuantity;
+        } else if (statusId.equals(Status.STATUS_TRANSFERRED_ID)) {
+            updatedAmount = availableBookQuantity - orderedBookQuantity;
         }
 
         return updatedAmount;

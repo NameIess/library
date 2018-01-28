@@ -1,18 +1,19 @@
 package command;
 
 import command.exception.ActionException;
-import dao.UserDao;
-import daofactory.DaoFactory;
 import model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.UserService;
+import service.exception.BusinessException;
 import service.exception.ServiceException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 public class UserRegistrationCommand extends AbstractActionCommand {
     private static final Logger Log = LogManager.getLogger(UserRegistrationCommand.class.getSimpleName());
+    private static final String ERROR_DUPLICATED_EMAIL_MESSAGE_ATTRIBUTE = "duplicated_email";
     private UserService userService;
 
     public UserRegistrationCommand(UserService userService) {
@@ -22,14 +23,19 @@ public class UserRegistrationCommand extends AbstractActionCommand {
     @Override
     public String execute(HttpServletRequest request) throws ActionException {
         User user = parseRequestData(request);
-        Log.info("User before registration: " + user);
+        String path = buildPathMap(Page.REDIRECT, Page.RESULT);
         try {
             userService.registration(user);
+            HttpSession session = request.getSession(true);
+            session.setAttribute(Message.SUCCESS.toString(), Message.ACCOUNT_CREATED_SUCCESSFULLY.toString());
         } catch (ServiceException e) {
             throw new ActionException("Error within UserRegistrationCommand execute(): " + e.getMessage(), e);
+        } catch (BusinessException e) {
+            Log.error("Registration error: " + e.getMessage());
+            request.setAttribute(ERROR_DUPLICATED_EMAIL_MESSAGE_ATTRIBUTE, Message.DUPLICATED_EMAIL.toString());
+            path = buildPathMap(Page.FORWARD, Page.USER_REGISTRATION);
         }
 
-        String path = buildPathMap(Page.REDIRECT, Page.LIBRARY_HOME);
         return path;
     }
 

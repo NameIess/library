@@ -10,7 +10,7 @@ public class DataReaderTest {
     private DataReader underTest = new DataReader();
 
     @Test
-    public void shouldThrowExceptionWhenFilePathIsNull() {
+    public void shouldReturnNullWhenFilePathIsNull() {
         Properties expected = underTest.parse(ResourceData.NULL_OBJECT);
         Assert.assertNull(expected);
     }

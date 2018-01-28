@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StatusDao extends AbstractDao<Status> {
-    private static final Logger Log = LogManager.getLogger(StatusDao.class.getSimpleName());
-
     private static final String FIND_ALL_QUERY = "SELECT id, name FROM status";
     private static final String FIND_ONE_QUERY = "SELECT id, name FROM status WHERE id = ?";
     private static final String INSERT_QUERY = "INSERT INTO status (id, name) VALUES (DEFAULT, ?)";

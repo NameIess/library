@@ -7,14 +7,17 @@ import model.Status;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.ReceiptService;
+import service.exception.BusinessException;
 import service.exception.ServiceException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 public class TransferBookCommand extends AbstractActionCommand {
     private static final Logger Log = LogManager.getLogger(TransferBookCommand.class.getSimpleName());
     private static final String ORDERED_QUANTITY_PARAMETER = "quantity";
     private static final String AVAILABLE_BOOK_AMOUNT = "amount";
+    private static final String ERROR_TRANSFER_MESSAGE_ATTRIBUTE = "transferError";
     private ReceiptService receiptService;
 
     public TransferBookCommand(ReceiptService receiptService) {
@@ -38,26 +41,19 @@ public class TransferBookCommand extends AbstractActionCommand {
         String availableBookAmountParameter = request.getParameter(AVAILABLE_BOOK_AMOUNT);
         Integer availableBookQuantity = Integer.valueOf(availableBookAmountParameter);
 
+        String path = buildPathMap(Page.REDIRECT, Page.RESULT);
         try {
             receiptService.transferBook(receiptId, statusId, bookId, orderedBookQuantity, availableBookQuantity);
+            HttpSession session = request.getSession(false);
+            session.setAttribute(Message.SUCCESS.toString(), Message.BOOK_TRANSFERRED_SUCCESSFULLY.toString());
         } catch (ServiceException e) {
             throw new ActionException("Error within TransferBookCommand execute(): " + e.getMessage(), e);
+        } catch (BusinessException e) {
+            Log.error("Transfer error: " + e.getMessage());
+            request.setAttribute(ERROR_TRANSFER_MESSAGE_ATTRIBUTE, Message.INVALID_ORDERED_ITEMS_AMOUNT.toString());
+            path = buildPathMap(Page.FORWARD, Page.RESULT);
         }
 
-        String path = getHomePageByRole(request);
         return path;
     }
-
-//    private int calculateTransferAmount(int orderedBookQuantity, int availableBookQuantity, Long statusId) {
-//        int updatedAmount = 0;
-//        if (statusId == Status.STATUS_TRANSFERRED_ID) {
-//            updatedAmount = availableBookQuantity - orderedBookQuantity;
-//        } else if (statusId == Status.STATUS_REJECTED_ID) {
-//            updatedAmount = availableBookQuantity;
-//        } else if (statusId == Status.STATUS_RETURNED_ID) {
-//            updatedAmount = availableBookQuantity + orderedBookQuantity;
-//        }
-//
-//        return updatedAmount;
-//    }
 }

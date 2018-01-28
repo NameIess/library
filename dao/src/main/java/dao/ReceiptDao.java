@@ -16,11 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReceiptDao extends AbstractDao<Receipt> {
-    private static final Logger Log = LogManager.getLogger(ReceiptDao.class.getSimpleName());
-
     private static final int SINGLE_ROW = 1;
     private static final String FIND_ALL_QUERY = "SELECT r.id, r.status_id, r.user_id, r.book_id, r.quantity, r.is_subscribtion, r.term," +
-        " b.author, b.title, b.number_of_pages, b.description, b.year_of_publishing, b.amount, s.name, u.name AS 'username', u.surname AS 'usersurname' " +
+        " b.author, b.title, b.number_of_pages, b.description, b.year_of_publishing, b.amount, s.name, u.name AS 'username', u.surname AS 'usersurname', u.email " +
         "FROM receipt AS r " +
         "INNER JOIN book AS b ON r.book_id = b.id " +
         "INNER JOIN status AS s ON r.status_id = s.id " +
@@ -31,7 +29,7 @@ public class ReceiptDao extends AbstractDao<Receipt> {
     private static final String UPDATE_STATUS_QUERY = "UPDATE receipt SET status_id = ? WHERE id = ?";
     private static final String DELETE_QUERY = "DELETE FROM receipt WHERE id = ?";
     private static final String FIND_ONE_QUERY = "SELECT r.id, r.status_id, r.user_id, r.book_id, r.quantity, r.is_subscribtion, r.term," +
-            " b.author, b.title, b.number_of_pages, b.description, b.year_of_publishing, b.amount, s.name, u.name AS 'username', u.surname AS 'usersurname' " +
+            " b.author, b.title, b.number_of_pages, b.description, b.year_of_publishing, b.amount, s.name, u.name AS 'username', u.surname AS 'usersurname', u.email " +
             "FROM receipt AS r " +
             "INNER JOIN book AS b ON r.book_id = b.id " +
             "INNER JOIN status AS s ON r.status_id = s.id " +
@@ -39,7 +37,7 @@ public class ReceiptDao extends AbstractDao<Receipt> {
     private static final String FIND_ALL_BY_USER_ID_QUERY = "SELECT r.id, r.status_id, r.user_id, r.book_id, r.quantity, r.is_subscribtion, r.term," +
             " b.author, b.title, b.number_of_pages, b.description, b.year_of_publishing, b.amount," +
             " s.name, " +
-            " u.name AS 'username', u.surname AS 'usersurname' " +
+            " u.name AS 'username', u.surname AS 'usersurname', u.email " +
             "FROM receipt AS r " +
             "INNER JOIN book AS b ON r.book_id = b.id " +
             "INNER JOIN status AS s ON r.status_id = s.id " +
@@ -101,6 +99,8 @@ public class ReceiptDao extends AbstractDao<Receipt> {
                 String surname = resultSet.getString(User.TABLE_NAME + User.SURNAME_ALIAS);
                 user.setSurname(surname);
                 receipt.setUser(user);
+                String email = resultSet.getString(User.EMAIL_ALIAS);
+                user.setEmail(email);
 
                 Book book = new Book();
                 Long bookId = resultSet.getLong(Book.FOREIGN_KEY_ALIAS);
@@ -122,8 +122,8 @@ public class ReceiptDao extends AbstractDao<Receipt> {
                 Integer quantity = resultSet.getInt(Receipt.QUANTITY_ALIAS);
                 receipt.setQuantity(quantity);
 
-                Boolean aBoolean = resultSet.getBoolean(Receipt.IS_SUBSCRIPTION_ALIAS);
-                receipt.setSubscription(aBoolean);
+                Boolean isSubscription = resultSet.getBoolean(Receipt.IS_SUBSCRIPTION_ALIAS);
+                receipt.setSubscription(isSubscription);
 
                 String term = resultSet.getString(Receipt.TERM_ALIAS);
                 receipt.setTerm(term);
@@ -175,7 +175,7 @@ public class ReceiptDao extends AbstractDao<Receipt> {
             Long bookId = book.getId();
             statement.setLong(3, bookId);
 
-            int quantity = entity.getQuantity();
+            Integer quantity = entity.getQuantity();
             statement.setInt(4, quantity);
 
             Boolean isSubscription = entity.isSubscription();

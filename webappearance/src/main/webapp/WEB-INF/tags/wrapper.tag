@@ -2,22 +2,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@attribute name="title" required="true" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-<c:set var="admin_roles" value="2" />
-<%@ taglib prefix="ctg" uri="/WEB-INF/tld/dayTime.tld" %>
-
-<fmt:setLocale value="${sessionScope.locale}"/>
-<fmt:setBundle basename="local" var="loc"/>
-<fmt:message bundle="${loc}" key="local.library" var="library"/>
-<fmt:message bundle="${loc}" key="local.my_books" var="my_books"/>
-<fmt:message bundle="${loc}" key="local.registred_users" var="users"/>
-<fmt:message bundle="${loc}" key="local.receipts" var="receipts"/>
-<fmt:message bundle="${loc}" key="local.sign_in" var="sign_in"/>
-<fmt:message bundle="${loc}" key="local.receipts" var="receipts"/>
-<fmt:message bundle="${loc}" key="local.registration" var="registration"/>
-<fmt:message bundle="${loc}" key="local.logout" var="logout"/>
-<fmt:message bundle="${loc}" key="local.footer.text" var="footer"/>
-<fmt:message bundle="${loc}" key="locale.language" var="language"/>
-
+<%@ include file="../jsp/locale/wrapper.jspf" %>
+<c:set var="admin_role" value="1" />
+<c:set var="librarian_role" value="2" />
 <!doctype html>
 <html>
 <head>
@@ -29,7 +16,6 @@
 </head>
 
 <body>
-<%--<ctg:info-time/>--%>
 <header>
     <h1><span>guardian of books</span></h1>
     <nav id="navmenu">
@@ -42,10 +28,12 @@
                     <a href="${pageContext.request.contextPath}/libraryDispatcher?command=user_receipt">${my_books}</a>
                 </li>
             </c:if>
-            <c:if test="${sessionScope.user.role.id <= admin_roles}">
+            <c:if test="${sessionScope.user.role.id == admin_role}">
                 <li>
                     <a href="${pageContext.request.contextPath}/libraryDispatcher?command=user_list">${users}</a>
                 </li>
+            </c:if>
+            <c:if test="${sessionScope.user.role.id <= librarian_role}">
                 <li>
                     <a href="${pageContext.request.contextPath}/libraryDispatcher?command=receipt_list">${receipts}</a>
                 </li>
@@ -83,7 +71,7 @@
 </header>
 <main id="body">
     <jsp:doBody/>
-    <div id="foot_up"></div>
+    <div class="foot_up"></div>
 </main>
 <footer id="footer">
     <article>
@@ -91,9 +79,6 @@
         <ul>
             <li>
                 <a href="https://plus.google.com/u/1/105623136449404869270" id="googleplus"></a>
-            </li>
-            <li>
-                <a href="" id="vk"></a>
             </li>
         </ul>
     </article>

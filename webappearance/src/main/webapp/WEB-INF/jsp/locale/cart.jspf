@@ -1,0 +1,18 @@
+<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setBundle basename="local" var="loc"/>
+<fmt:message bundle="${loc}" key="local.cart" var="cart"/>
+<fmt:message bundle="${loc}" key="local.title" var="title"/>
+<fmt:message bundle="${loc}" key="local.author" var="author"/>
+<fmt:message bundle="${loc}" key="local.year_of_publishing" var="year_of_publishing"/>
+<fmt:message bundle="${loc}" key="local.number_of_pages" var="number_of_pages"/>
+<fmt:message bundle="${loc}" key="local.description" var="description"/>
+<fmt:message bundle="${loc}" key="local.order_quantity" var="order_quantity"/>
+<fmt:message bundle="${loc}" key="local.in_stock" var="in_stock"/>
+<fmt:message bundle="${loc}" key="local.rent.subscribe" var="subscribe"/>
+<fmt:message bundle="${loc}" key="local.usage_time" var="usage_time"/>
+<fmt:message bundle="${loc}" key="local.order_now" var="order_now"/>
+<fmt:message bundle="${loc}" key="local.actual_time" var="current_time"/>
+<fmt:message bundle="${loc}" key="local.book_amount_cannot_be_zero" var="wrong_book_amount"/>
+<input id="ordered_book_amount_error_message" type="hidden" value="${wrong_book_amount}">
+<fmt:message bundle="${loc}" key="local.no_date" var="wrong_date"/>
+<input id="no_date_error_message" type="hidden" value="${wrong_date}">

@@ -1,5 +1,6 @@
 package connection;
 
+import connection.exception.DbConnectionPoolException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,8 +43,8 @@ public class DbConnectionPool {
                 if (instance == null) {
                     instance = new DbConnectionPool(url, username, password, maxConnectionAmount, driver);
                     isInitialized.set(true);
+                    Log.info("Connection pool has been created.");
                 }
-
             } finally {
                 lock.unlock();
             }
@@ -67,7 +68,7 @@ public class DbConnectionPool {
 
             Log.info("A JDBC driver has been registered");
         } catch (Exception e) {
-            Log.info("Can't register JDBC driver");
+            throw new DbConnectionPoolException("Can't register JDBC driver. " + e.getMessage(), e);
         }
     }
 
@@ -85,21 +86,21 @@ public class DbConnectionPool {
                         connection = getConnection();
                     }
                 } catch (SQLException e) {
-                    Log.error("Error while receiving connection.");
-                    connection = getConnection();
+                    throw new DbConnectionPoolException("Error while receiving connection. " + e.getMessage(), e);
                 }
             } else {
                 connection = createConnection();
             }
-            return connection;
+            Log.info("Connection " + connection + " has been received.");
 
+            return connection;
         } finally {
             lock.unlock();
         }
     }
 
     private Connection createConnection() {
-        Connection connection = null;
+        Connection connection;
         try {
             if (username == null) {
                 connection = DriverManager.getConnection(url);
@@ -108,7 +109,8 @@ public class DbConnectionPool {
             }
 
         } catch (SQLException e) {
-            Log.error("Error while creating connection.");
+            Log.error("Can not create connection. Wrong authentication data.");
+            throw new DbConnectionPoolException("Error while creating connection. " + e.getMessage(), e);
         }
 
         return connection;
@@ -133,13 +135,12 @@ public class DbConnectionPool {
             for (Connection connection : availableConnections) {
                 try {
                     connection.close();
-                    Log.info("All connections has been closed.");
                 } catch (SQLException e) {
-                    Log.error("Error while closing connection. Can't close connection for pool.");
+                    throw new DbConnectionPoolException("Error while closing connection. Can't close connection for pool. " + e.getMessage(), e);
                 }
             }
             availableConnections.clear();
-
+            Log.info("All connections has been closed.");
         } finally {
             lock.unlock();
         }

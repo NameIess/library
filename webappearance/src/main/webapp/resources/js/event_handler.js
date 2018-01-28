@@ -1,78 +1,64 @@
 $(document).ready(function () {
-   $("#localization").bind("change", function () {
-       this.form.submit();
-   });
-
+    const LOCALIZATION = "#localization";
     const RENT_TERM = "term";
-    let rentDateTime = 'input[name="term"]';
-    let isRentCheckbox = 'input[name="is_subscription"]';
-    let datePick = "#date_pick";
-    let timePick = "#time_pick";
-    let clear = ".clear";
-    let options = {
+    const RENT_CHECKBOX = 'input[name="is_subscribtion"]';
+    const DATE_PICKER = "#date_pick";
+    const TIME_PICKER = "#time_pick";
+    const TIME_PICKER_CLASS = ".timepicker";
+    const CLEARABLE_PICKER = ".clear";
+    const NAME_ALIAS = "name";
+    const COUNTABLE_TABLE_ROW = ".table_countable tbody tr";
+    const FIRST_TABLE_DATA = "td:first";
+
+    var options = {
         clearable: true
     };
 
-    $(isRentCheckbox).change(function () {
+    $(LOCALIZATION).bind("change", function () {
+        this.form.submit();
+    });
+
+    $(DATE_PICKER).prop(NAME_ALIAS, RENT_TERM);
+
+    $(RENT_CHECKBOX).change(function () {
         if ($(this).is(':checked')) {
-            $(datePick).show();
-            $(timePick).hide();
-            $(clear).hide();
-            $(datePick).prop("name", RENT_TERM);
+            $(DATE_PICKER).show();
+            $(TIME_PICKER).hide();
+            $(CLEARABLE_PICKER).hide();
+            $(DATE_PICKER).prop(NAME_ALIAS, RENT_TERM);
+            $(TIME_PICKER).prop(NAME_ALIAS, "");
         } else {
-            $(timePick).show();
-            $(clear).show();
-            $(datePick).hide();
-            $(timePick).prop("name", RENT_TERM);
-            $('.timepicker').wickedpicker(options);
+            $(TIME_PICKER).show();
+            $(DATE_PICKER).hide();
+            $(DATE_PICKER).prop(NAME_ALIAS, "");
+            $(TIME_PICKER).prop(NAME_ALIAS, RENT_TERM);
+            $(TIME_PICKER_CLASS).wickedpicker(options);
+            $(CLEARABLE_PICKER).show();
         }
     });
 
+    $(COUNTABLE_TABLE_ROW).each(function (i) {
+        let number = ++i;
+        $(this).find(FIRST_TABLE_DATA).text(number + ".");
+    });
 
+    $('.order_form').submit(function (e) {
+        let currentQuantity = $("input[name$='quantity']").val();
+        let currentTime = $("#time_pick").val();
+        let currentDate = $("#date_pick").val();
 
+        if (currentTime.length === 0 && currentDate.length === 0) {
+            e.preventDefault();
+            let errorMessage = $("#no_date_error_message").val();
+            $("#cart_message_date").text(errorMessage);
+        }
 
-//
-//     let confirmed = $(".confirmed .submit_button");
-// // Get the button that opens the modal
-//
-// // Get the modal
-//     var modal = document.getElementById('myModal');
-//
-// // Get the <span> element that closes the modal
-//     var span = document.getElementsByClassName("close")[0];
-//
-// // When the user clicks the button, open the modal
-//
-//     confirmed.on("click", function(e) {
-//         e.preventDefault();
-//         modal.show();
-//         alert("CONFIRM CLICKED")
-//
-//     });
-//
-// // When the user clicks on <span> (x), close the modal
-//     span.on("click", function (e) {
-//         modal.hide();
-//     });
-//
-//
-//
-// // When the user clicks anywhere outside of the modal, close it
-//     $(document).on("click" , function(e) {
-//         e.preventDefault();
-//         if (e.target == modal) {
-//             $("#myModal").hide();
-//         }
-//     });
-//
-//     $(".triggerRemove").on("click", function(e) {
-//         e.preventDefault();
-//         $("#modalRemove .removeBtn").on("click", function (e) {
-//
-//             this.form.submit();
-//         });
-//     });
-
+        if (currentQuantity.length === 0 || currentQuantity === 0) {
+            e.preventDefault();
+            let errorMessage = $("#ordered_book_amount_error_message").val();
+            $("#cart_message").text(errorMessage);
+        }
+    });
 });
 
 

@@ -1,0 +1,15 @@
+<fmt:message bundle="${loc}" key="local.wrong_email" var="wrong_email"/>
+<fmt:message bundle="${loc}" key="local.done" var="done"/>
+<fmt:message bundle="${loc}" key="local.this_field_is_required" var="required_field"/>
+<fmt:message bundle="${loc}" key="local.passwords_dont_match" var="passwords_dont_match"/>
+<fmt:message bundle="${loc}" key="local.password_length" var="password_length"/>
+<fmt:message bundle="${loc}" key="local.password_info" var="password_info"/>
+<fmt:message bundle="${loc}" key="local.name_length" var="name_length"/>
+
+<input id="email_error_message" type="hidden" value="${wrong_email}">
+<input id="general_success_message" type="hidden" value="${done}">
+<input id="required_field_message" type="hidden" value="${required_field}">
+<input id="passwords_dont_match_message" type="hidden" value="${passwords_dont_match}">
+<input id="password_length_message" type="hidden" value="${password_length}">
+<input id="password_info_message" type="hidden" value="${password_info}">
+<input id="name_length_message" type="hidden" value="${name_length}">

@@ -1,6 +1,7 @@
 package dao;
 
 import connection.DbConnectionPool;
+import connection.exception.DbConnectionPoolException;
 import dao.exception.PersistException;
 import model.Identified;
 import org.apache.logging.log4j.LogManager;
@@ -43,8 +44,8 @@ public abstract class AbstractDao<T extends Identified> implements GenericDao<T>
 
     @Override
     public void create(T entity) throws PersistException {
-        String sql = getCreateQuery();
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        String insertQuery = getCreateQuery();
+        try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
             prepareStatementForInsert(statement, entity);
             int counter = statement.executeUpdate();
             if (counter != SINGLE_ROW) {
@@ -66,8 +67,8 @@ public abstract class AbstractDao<T extends Identified> implements GenericDao<T>
         } catch (SQLException e) {
             throw new PersistException("Error within AbstractDao findOne(): " + e.getMessage(), e);
         }
-        if (list == null || list.isEmpty()) {
-            throw new PersistException("Error within AbstractDao findOne(): record with PK = " + id + " has not been found.");
+        if (list.isEmpty()) {
+            return null;
         }
         if (list.size() > SINGLE_ROW) {
             throw new PersistException("Error within AbstractDao findOne(): received more than one record.");
@@ -124,7 +125,7 @@ public abstract class AbstractDao<T extends Identified> implements GenericDao<T>
             connection.setAutoCommit(false);
             Log.info("A transaction has been started");
         } catch (SQLException e) {
-            throw new RuntimeException("Error within AbstractDao startTransaction(). Can not disable autocommit and start transaction: " + e.getMessage(), e);
+            throw new DbConnectionPoolException("Error within AbstractDao startTransaction(). Can not disable autocommit and start transaction: " + e.getMessage(), e);
         }
     }
 
@@ -134,7 +135,7 @@ public abstract class AbstractDao<T extends Identified> implements GenericDao<T>
             connection.setAutoCommit(true);
             Log.info("A transaction has been finished");
         } catch (SQLException e) {
-            throw new RuntimeException("Error within AbstractDao stopTransaction(). Can not enable autocommit and stop transaction: " + e.getMessage(), e);
+            throw new DbConnectionPoolException("Error within AbstractDao stopTransaction(). Can not enable autocommit and stop transaction: " + e.getMessage(), e);
         }
     }
 
@@ -144,7 +145,7 @@ public abstract class AbstractDao<T extends Identified> implements GenericDao<T>
             connection.commit();
             Log.info("A transaction has been committed");
         } catch (SQLException e) {
-            throw new RuntimeException("Error within AbstractDao commit(). " + e.getMessage(), e);
+            throw new DbConnectionPoolException("Error within AbstractDao commit(). " + e.getMessage(), e);
         }
     }
 
@@ -154,7 +155,7 @@ public abstract class AbstractDao<T extends Identified> implements GenericDao<T>
             connection.rollback();
             Log.info("A transaction has been destroyed");
         } catch (SQLException e) {
-            throw new RuntimeException("Error within AbstractDao rollback(). Can not rollback DB connection: " + e.getMessage(), e);
+            throw new DbConnectionPoolException("Error within AbstractDao rollback(). Can not rollback DB connection: " + e.getMessage(), e);
         }
     }
 
@@ -163,8 +164,6 @@ public abstract class AbstractDao<T extends Identified> implements GenericDao<T>
         if (connection != null) {
             DbConnectionPool connectionPool = DbConnectionPool.getInstance();
             connectionPool.releaseConnection(connection);
-        } else {
-            Log.info("Connection is null");
         }
     }
 }

@@ -11,9 +11,9 @@ import service.exception.ServiceException;
 import util.RequestManager;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 public class BookOrderCommand extends AbstractActionCommand {
-    private static final Logger Log = LogManager.getLogger(BookOrderCommand.class.getSimpleName());
     private ReceiptService receiptService;
 
     public BookOrderCommand(ReceiptService receiptService) {
@@ -23,9 +23,10 @@ public class BookOrderCommand extends AbstractActionCommand {
     @Override
     public String execute(HttpServletRequest request) throws ActionException {
         Receipt receipt = parseRequestData(request);
-        Log.info("Receipt before saving: " + receipt);
         try {
             receiptService.save(receipt);
+            HttpSession session = request.getSession(false);
+            session.setAttribute(Message.SUCCESS.toString(), Message.BOOK_REQUEST_SENT.toString());
         } catch (ServiceException e) {
             throw new ActionException("Error within BookOrderCommand execute(): " + e.getMessage(), e);
         }

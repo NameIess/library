@@ -17,10 +17,10 @@ public class UserSignInValidator implements Verifiable<User> {
     public boolean validate(User user) {
         String email = user.getEmail();
         boolean isEmailValid = isMatches(EMAIL_PATTERN, email);
-        Log.debug("IS EMAIL VALID : " + email + " = " + isEmailValid);
+        Log.info("Is email valid : " + email + " = " + isEmailValid);
         String password = user.getPassword();
         boolean isPasswordValid = isMatches(PASSWORD_PATTERN, password);
-        Log.debug("IS PASSWORD VALID : " + password + " = " + isPasswordValid);
+        Log.info("Is password valid : " + password + " = " + isPasswordValid);
         return isEmailValid && isPasswordValid;
     }
 

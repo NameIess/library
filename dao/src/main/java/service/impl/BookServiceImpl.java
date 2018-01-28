@@ -24,6 +24,8 @@ public class BookServiceImpl implements BookService {
             bookDao.startTransaction();
             bookDao.create(book);
             bookDao.commit();
+
+            Log.info("Book " + book + " has been saved to DB");
         } catch (PersistException e) {
             bookDao.rollback();
             throw new ServiceException("Error within BookServiceImpl save(): " + e.getMessage(), e);
@@ -36,6 +38,7 @@ public class BookServiceImpl implements BookService {
     public void delete(Book book) throws ServiceException {
         try {
             bookDao.delete(book);
+            Log.info("Book " + book + " has been removed from DB");
         } catch (PersistException e) {
             throw new ServiceException("Error within BookServiceImpl delete(): " + e.getMessage(), e);
         } finally {
@@ -53,6 +56,7 @@ public class BookServiceImpl implements BookService {
         } finally {
             bookDao.releaseConnection();
         }
+        Log.info("Book " + book + " has been received from DB by ID - " + id);
         return book;
     }
 
@@ -66,6 +70,7 @@ public class BookServiceImpl implements BookService {
         } finally {
             bookDao.releaseConnection();
         }
+        Log.info("Books " + bookList + " have been received from DB");
         return bookList;
     }
 }

@@ -1,0 +1,17 @@
+<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setBundle basename="local" var="loc"/>
+<%@ include file="user_validator_message.jspf" %>
+<fmt:message bundle="${loc}" key="local.email" var="mail"/>
+<fmt:message bundle="${loc}" key="local.password" var="password"/>
+<fmt:message bundle="${loc}" key="local.log_in" var="submit_button"/>
+<fmt:message bundle="${loc}" key="local.sign_in" var="sign_in"/>
+
+<c:set var="authorization_error_key" value="${requestScope.errorAuthorizationMessage}"/>
+<c:if test="${not empty authorization_error_key}">
+    <fmt:message bundle="${loc}" key="${authorization_error_key}" var="authorization_error_message"/>
+</c:if>
+
+<c:set var="success_message_key" value="${requestScope.successMessage}"/>
+<c:if test="${not empty success_message_key}">
+    <fmt:message bundle="${loc}" key="${success_message_key}" var="success_message"/>
+</c:if>

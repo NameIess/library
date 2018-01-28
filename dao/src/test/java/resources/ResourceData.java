@@ -2,6 +2,7 @@ package resources;
 
 import model.Book;
 import model.Receipt;
+import model.Role;
 import model.User;
 
 import java.util.ArrayList;
@@ -9,11 +10,19 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ResourceData {
+    public static final String CALCULATE_TRANSFER_AMOUNT_METHOD_NAME = "calculateTransferAmount";
+    public static final String IS_VALID_INPUT_DATA_METHOD_NAME = "isValidInputData";
+    public static final String ENCRYPT_PASSWORD_METHOD_NAME = "encryptPassword";
+    public static final String SAMPLE_STRING = "string";
     public static final String VALID_PATH = "../src/test/java/resources/test.properties";
     public static final String NULL_OBJECT = null;
-    public static final Integer NUMBER_1 = 1;
+    public static final Integer ONE_TIME = 1;
+    public static final Integer TWO_TIMES = 2;
+    public static final Integer ZERO_INTEGER_VALUE = 0;
     public static final Long ENTITY_ID_1 = 1L;
     public static final Long STATUS_ID = 2L;
+    public static final int NEGATIVE_INTEGER_VALUE = -5;
+    public static final int POSITIVE_INTEGER_VALUE = 5;
     public static final int ORDERED_BOOKS_AMOUNT = 4;
     public static final int AVAILABLE_BOOKS_AMOUNT = 10;
     public static final String TEST_FILE_KEY = "test.data";
@@ -26,9 +35,10 @@ public class ResourceData {
             "As1As", "@g.r", "25ed73ebef0081ac91c3b030c8cc17c9",
             "asserrrrrrrrrrrrrrrrrrrrrrrrFs!gmail3com", "f@f.f", "fc7654acfd8b70c8b79ed14e1edf78e4",
             "As1As", "ad@gaweg.r", "39d17b2227d76b1c113cabf51e39e07b");
-    public static Book book = new Book();
-    public static User user = new User();
-    public static Receipt receipt = new Receipt();
+    public static Book bookInstance = new Book();
+    public static User userInstance = new User();
+    public static Receipt receiptInstance = new Receipt();
+    public static Role roleInstance = new Role();
 
     static {
         User u1 = new User();
@@ -206,9 +216,12 @@ public class ResourceData {
     }
 
     static {
-        book.setId(ENTITY_ID_1);
-        user.setId(ENTITY_ID_1);
-        receipt.setId(ENTITY_ID_1);
+        bookInstance.setId(ENTITY_ID_1);
+        userInstance.setId(ENTITY_ID_1);
+        receiptInstance.setId(ENTITY_ID_1);
+
+        roleInstance.setId(ENTITY_ID_1);
+        roleInstance.setName(SAMPLE_STRING);
     }
 
 }

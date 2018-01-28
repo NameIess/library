@@ -1,6 +1,8 @@
 package model;
 
-public class Book implements Identified {
+import java.io.Serializable;
+
+public class Book implements Identified, Serializable {
     public static final String ID_ALIAS = "id";
     public static final String TITLE_ALIAS = "title";
     public static final String AUTHOR_ALIAS = "author";
@@ -88,5 +90,56 @@ public class Book implements Identified {
         sb.append(", amount=").append(amount);
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof Book)) {
+            return false;
+        }
+
+        Book book = (Book) o;
+
+        if (id != null ? !id.equals(book.id) : book.id != null) {
+            return false;
+        }
+
+        if (title != null ? !title.equals(book.title) : book.title != null) {
+            return false;
+        }
+
+        if (author != null ? !author.equals(book.author) : book.author != null) {
+            return false;
+        }
+
+        if (yearOfPublishing != null ? !yearOfPublishing.equals(book.yearOfPublishing) : book.yearOfPublishing != null) {
+            return false;
+        }
+
+        if (numberOfPages != null ? !numberOfPages.equals(book.numberOfPages) : book.numberOfPages != null) {
+            return false;
+        }
+
+        if (description != null ? !description.equals(book.description) : book.description != null) {
+            return false;
+        }
+
+        return amount != null ? amount.equals(book.amount) : book.amount == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (author != null ? author.hashCode() : 0);
+        result = 31 * result + (yearOfPublishing != null ? yearOfPublishing.hashCode() : 0);
+        result = 31 * result + (numberOfPages != null ? numberOfPages.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (amount != null ? amount.hashCode() : 0);
+        return result;
     }
 }

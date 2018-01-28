@@ -1,6 +1,8 @@
 package command.exception;
 
-public class ActionException extends Exception {
+import java.io.Serializable;
+
+public class ActionException extends Exception implements Serializable {
 
     public ActionException() {
     }

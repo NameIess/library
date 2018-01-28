@@ -1,16 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isErrorPage="true" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<t:wrapper title="error">
-    <p>
-        Request from ${pageContext.errorData.requestURI} is failed
-        <br/>
-        Servlet name: ${pageContext.errorData.servletName}
-        <br/>
-        Status code: ${pageContext.errorData.statusCode}
-        <br/>
-        Exception: ${pageContext.exception}
-        <br/>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ include file="locale/error.jspf" %>
+<t:wrapper title="${error}">
+    <h2><span>${error}</span></h2>
 
-        Message from dao.exception: ${pageContext.exception.message}
-    </p>
+    <strong id="error_message" class="message">${error_message}</strong>
 </t:wrapper>

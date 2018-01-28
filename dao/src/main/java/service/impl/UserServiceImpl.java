@@ -6,6 +6,7 @@ import model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.UserService;
+import service.exception.BusinessException;
 import service.exception.ServiceException;
 import util.Encryptable;
 import validator.Verifiable;
@@ -30,6 +31,7 @@ public class UserServiceImpl implements UserService {
     public void delete(User user) throws ServiceException {
         try {
             userDao.delete(user);
+            Log.info("User " + user + " has been removed from DB");
         } catch (PersistException e) {
             throw new ServiceException("Error within UserService delete(): " + e.getMessage(), e);
         } finally {
@@ -42,6 +44,7 @@ public class UserServiceImpl implements UserService {
         User user;
         try {
             user = userDao.findOne(id);
+            Log.info("User " + user + " has been received from DB by ID - " + id);
         } catch (PersistException e) {
             throw new ServiceException("Error within UserService findOneById(): " + e.getMessage(), e);
         } finally {
@@ -55,6 +58,7 @@ public class UserServiceImpl implements UserService {
         List<User> userList;
         try {
             userList = userDao.findAll();
+            Log.info("Users " + userList + " have been received from DB");
         } catch (PersistException e) {
             throw new ServiceException("Error within UserService findAll(): " + e.getMessage(), e);
         } finally {
@@ -73,6 +77,7 @@ public class UserServiceImpl implements UserService {
         User registeredUser;
         try {
             registeredUser = userDao.findOneByMailPass(user);
+            Log.info("Registered user " + registeredUser + " have been received from DB by personal data");
         } catch (PersistException e) {
             throw new ServiceException("Error within UserService findRegisteredUser(): " + e.getMessage(), e);
         } finally {
@@ -83,21 +88,21 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void registration(User user) throws ServiceException {
+    public void registration(User user) throws ServiceException, BusinessException {
         String encryptedPassword = encryptPassword(user);
         user.setPassword(encryptedPassword);
         try {
             userDao.startTransaction();
-            Log.info("User before registration: " + user);
             User registeredUser = userDao.findOneByMail(user);
             if (registeredUser == null) {
                 userDao.create(user);
                 userDao.commit();
+
+                Log.info("User " + user + " has been saved to DB");
             } else {
                 userDao.rollback();
-                throw new ServiceException("This user is registered already.");
+                throw new BusinessException("The user with this email is registered already");
             }
-
         } catch (PersistException e) {
             userDao.rollback();
             throw new ServiceException("Error within UserService save(): " + e.getMessage(), e);
@@ -112,6 +117,8 @@ public class UserServiceImpl implements UserService {
             userDao.startTransaction();
             userDao.update(user);
             userDao.commit();
+
+            Log.info("User has been updated");
         } catch (PersistException e) {
             userDao.rollback();
             throw new ServiceException("Error within UserService update(): " + e.getMessage(), e);

@@ -1,0 +1,9 @@
+<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setBundle basename="local" var="loc"/>
+<fmt:message bundle="${loc}" key="local.library" var="library"/>
+<fmt:message bundle="${loc}" key="local.title" var="title"/>
+<fmt:message bundle="${loc}" key="local.author" var="author"/>
+<fmt:message bundle="${loc}" key="local.year_of_publishing" var="year_of_publishing"/>
+<fmt:message bundle="${loc}" key="local.in_stock" var="amount"/>
+<fmt:message bundle="${loc}" key="local.number_of_pages" var="number_of_pages"/>
+<fmt:message bundle="${loc}" key="local.more_info" var="more"/>

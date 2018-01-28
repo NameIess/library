@@ -1,7 +1,7 @@
 package service;
 
-import dao.exception.PersistException;
 import model.User;
+import service.exception.BusinessException;
 import service.exception.ServiceException;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public interface UserService {
 
     User findRegisteredUser(User user) throws ServiceException;
 
-    void registration(User user) throws ServiceException;
+    void registration(User user) throws ServiceException, BusinessException;
 
     void update(User user) throws ServiceException;
 }

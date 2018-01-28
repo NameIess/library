@@ -3,15 +3,13 @@ package command;
 import command.exception.ActionException;
 import model.Role;
 import model.User;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import service.UserService;
 import service.exception.ServiceException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 public class UserUpdateCommand extends AbstractActionCommand {
-    private static final Logger Log = LogManager.getLogger(UserUpdateCommand.class.getSimpleName());
     private UserService userService;
 
     public UserUpdateCommand(UserService userService) {
@@ -22,14 +20,15 @@ public class UserUpdateCommand extends AbstractActionCommand {
     public String execute(HttpServletRequest request) throws ActionException {
         User user = parseRequestData(request);
 
-        Log.debug("User before update: " + user);
         try {
             userService.update(user);
+            HttpSession session = request.getSession(false);
+            session.setAttribute(Message.SUCCESS.toString(), Message.ACCOUNT_UPDATED_SUCCESSFULLY.toString());
         } catch (ServiceException e) {
-            Log.error("SERVICE EXCEPTION: " + e.getMessage());
+            throw new ActionException("Error within UserUpdateCommand execute(): " + e.getMessage(), e);
         }
 
-        String path = buildPathMap(Page.REDIRECT, Page.ADMIN_PANEL);
+        String path = buildPathMap(Page.REDIRECT, Page.RESULT);
         return path;
     }
 

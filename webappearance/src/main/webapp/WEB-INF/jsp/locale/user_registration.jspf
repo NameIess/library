@@ -1,0 +1,28 @@
+<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setBundle basename="local" var="loc"/>
+<%@ include file="user_validator_message.jspf" %>
+<fmt:message bundle="${loc}" key="local.registration" var="registration"/>
+<fmt:message bundle="${loc}" key="local.first_name" var="first_name"/>
+<fmt:message bundle="${loc}" key="local.second_name" var="second_name"/>
+<fmt:message bundle="${loc}" key="local.surname" var="surname"/>
+<fmt:message bundle="${loc}" key="local.email" var="email_address"/>
+<fmt:message bundle="${loc}" key="local.password" var="password"/>
+<fmt:message bundle="${loc}" key="local.confirm_password" var="confirm_password"/>
+<fmt:message bundle="${loc}" key="local.phone_number" var="phone_number"/>
+<fmt:message bundle="${loc}" key="local.passport_series" var="passport_series"/>
+<fmt:message bundle="${loc}" key="local.passport_number" var="passport_number"/>
+<fmt:message bundle="${loc}" key="local.submit" var="submit"/>
+<fmt:message bundle="${loc}" key="local.edit_user" var="edit_user"/>
+<fmt:message bundle="${loc}" key="local.personnel_number" var="personnel_number"/>
+<fmt:message bundle="${loc}" key="locale.user_role" var="user_role"/>
+<fmt:message bundle="${loc}" key="local.admin" var="admin"/>
+<fmt:message bundle="${loc}" key="local.librarian" var="librarian"/>
+<fmt:message bundle="${loc}" key="local.reader" var="reader"/>
+
+<c:set var="registration_error_key" value="${requestScope.duplicated_email}"/>
+<c:if test="${not empty registration_error_key}">
+    <fmt:message bundle="${loc}" key="${registration_error_key}" var="duplicated_email"/>
+</c:if>
+
+
+

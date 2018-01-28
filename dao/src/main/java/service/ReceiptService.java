@@ -2,6 +2,7 @@ package service;
 
 import model.Receipt;
 import model.User;
+import service.exception.BusinessException;
 import service.exception.ServiceException;
 
 import java.util.List;
@@ -17,5 +18,5 @@ public interface ReceiptService {
 
     List<Receipt> findAllByUserId(User user) throws ServiceException;
 
-    void transferBook(Long receiptId, Long statusId, Long bookId, Integer orderedBookQuantity, Integer availableBookQuantity) throws ServiceException;
+    void transferBook(Long receiptId, Long statusId, Long bookId, Integer orderedBookQuantity, Integer availableBookQuantity) throws ServiceException, BusinessException;
 }

@@ -10,5 +10,11 @@
         <name>info-time</name>
         <tag-class>util.tag.DayTimeTag</tag-class>
         <body-content>empty</body-content>
+        <attribute>
+            <name>locale</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
+
 </taglib>

@@ -23,15 +23,18 @@ public class Interceptor {
         anonymousAllowedActions.add(CommandEnum.EMPTY_COMMAND.toString());
         anonymousAllowedActions.add(CommandEnum.LIBRARY_HOME.toString());
         anonymousAllowedActions.add(CommandEnum.CHANGE_LOCALE.toString());
+
         readerAllowedAction.addAll(anonymousAllowedActions);
         readerAllowedAction.add(CommandEnum.USER_SIGN_OUT.toString());
         readerAllowedAction.add(CommandEnum.ADD_BOOK_TO_CART.toString());
         readerAllowedAction.add(CommandEnum.BOOK_ORDER.toString());
         readerAllowedAction.add(CommandEnum.RECEIPT_DELETE.toString());
         readerAllowedAction.add(CommandEnum.USER_RECEIPT.toString());
+
         librarianAllowedActions.addAll(readerAllowedAction);
         librarianAllowedActions.add(CommandEnum.RECEIPT_LIST.toString());
         librarianAllowedActions.add(CommandEnum.BOOK_TRANSFER.toString());
+
         adminAllowedActions.addAll(librarianAllowedActions);
         adminAllowedActions.add(CommandEnum.USER_LIST.toString());
         adminAllowedActions.add(CommandEnum.USER_DELETE.toString());
@@ -59,7 +62,7 @@ public class Interceptor {
 
         } else {
             isAllowed = anonymousAllowedActions.contains(accessor);
-            Log.debug("Allowed for anonymous: =" + accessor + isAllowed);
+            Log.debug("Allowed for anonymous: = " + accessor + isAllowed);
         }
 
         return isAllowed;

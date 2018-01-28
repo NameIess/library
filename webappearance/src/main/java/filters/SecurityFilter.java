@@ -45,7 +45,7 @@ public class SecurityFilter implements Filter {
             Log.debug("Access to " + actionName + " to " + userRoleId + " granted");
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
-            Log.debug("Access denied to " + userRoleId + " for action " + actionName);
+            Log.debug("Access denied to " + userRoleId + " tp action " + actionName);
             String safetyPath = Page.CHANGE_PAGE.toString() + Page.USER_SIGN_IN.toString();
             response.sendRedirect(safetyPath);
         }

@@ -1,6 +1,8 @@
 package model;
 
-public class User implements Identified {
+import java.io.Serializable;
+
+public class User implements Identified, Serializable {
     public static final String ID_ALIAS = "id";
     public static final String FOREIGN_KEY_ID_ALIAS = "user_id";
     public static final String NAME_ALIAS = "name";
@@ -130,5 +132,76 @@ public class User implements Identified {
         sb.append(", password='").append(password).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof User)) {
+            return false;
+        }
+
+        User user = (User) o;
+
+        if (id != null ? !id.equals(user.id) : user.id != null) {
+            return false;
+        }
+
+        if (employeeNumber != null ? !employeeNumber.equals(user.employeeNumber) : user.employeeNumber != null) {
+            return false;
+        }
+
+        if (name != null ? !name.equals(user.name) : user.name != null) {
+            return false;
+        }
+
+        if (secondName != null ? !secondName.equals(user.secondName) : user.secondName != null) {
+            return false;
+        }
+
+        if (surname != null ? !surname.equals(user.surname) : user.surname != null) {
+            return false;
+        }
+
+        if (email != null ? !email.equals(user.email) : user.email != null) {
+            return false;
+        }
+
+        if (phoneNumber != null ? !phoneNumber.equals(user.phoneNumber) : user.phoneNumber != null) {
+            return false;
+        }
+
+        if (passportSeries != null ? !passportSeries.equals(user.passportSeries) : user.passportSeries != null) {
+            return false;
+        }
+
+        if (passportNumber != null ? !passportNumber.equals(user.passportNumber) : user.passportNumber != null) {
+            return false;
+        }
+
+        if (password != null ? !password.equals(user.password) : user.password != null) {
+            return false;
+        }
+
+        return role != null ? role.equals(user.role) : user.role == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (employeeNumber != null ? employeeNumber.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (secondName != null ? secondName.hashCode() : 0);
+        result = 31 * result + (surname != null ? surname.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
+        result = 31 * result + (passportSeries != null ? passportSeries.hashCode() : 0);
+        result = 31 * result + (passportNumber != null ? passportNumber.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (role != null ? role.hashCode() : 0);
+        return result;
     }
 }

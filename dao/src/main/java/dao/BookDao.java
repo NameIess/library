@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookDao extends AbstractDao<Book> {
-    private static final Logger Log = LogManager.getLogger(BookDao.class.getSimpleName());
-
     private static final String FIND_ALL_QUERY = "SELECT id, title, author, year_of_publishing, number_of_pages, description, amount FROM book";
     private static final String FIND_ONE_QUERY = "SELECT id, title, author, year_of_publishing, number_of_pages, description, amount FROM book WHERE id = ?";
     private static final String INSERT_QUERY = "INSERT INTO book (id, title, author, year_of_publishing, number_of_pages, description, amount) VALUES (DEFAULT, ?, ?, ?, ?, ?, ?)";

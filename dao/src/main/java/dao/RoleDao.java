@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RoleDao extends AbstractDao<Role> {
-    private static final Logger Log = LogManager.getLogger(RoleDao.class.getSimpleName());
-
     private static final String FIND_ALL_QUERY = "SELECT id, name FROM role";
     private static final String FIND_ONE_QUERY = "SELECT id, name FROM role WHERE id = ?";
     private static final String INSERT_QUERY = "INSERT INTO role (id, name) VALUES (DEFAULT, ?)";

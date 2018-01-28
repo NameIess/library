@@ -1,2 +1,6 @@
+target
+# IntelliJ IDEA files
 .idea
-.idea/
+.iws
+*.iml
+*.ipr

@@ -2,12 +2,13 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<fmt:setLocale value="${sessionScope.locale}"/>
-<fmt:setBundle basename="local" var="loc"/>
-<fmt:message bundle="${loc}" key="local.user_panel" var="user_panel"/>
-<fmt:message bundle="${loc}" key="local.user_with_such_email_is_already_registred" var="duplicated_user"/>
+<%@ include file="locale/result.jspf" %>
 
-<t:wrapper title="${user_panel}">
+<t:wrapper title="${report}">
+    <h2><span>${report}</span></h2>
+
+    <strong id="error_message" class="message">${error_message}</strong>
+    <strong id="success_message" class="message not_error">${success_message}</strong>
 
 </t:wrapper>
 

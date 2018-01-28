@@ -14,7 +14,13 @@ public final class RequestManager {
 
     public static User getUserFromSession(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        return session == null ? null : (User)session.getAttribute(SESSION_USER_ATTRIBUTE);
+        if (session != null) {
+            Object currentUserWrapper = session.getAttribute(SESSION_USER_ATTRIBUTE);
+            User currentUser = (User) currentUserWrapper;
+            return currentUser;
+        } else {
+            return null;
+        }
     }
 
     public static String getActionName(HttpServletRequest request) {

@@ -6,8 +6,15 @@ import model.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import resources.ResourceData;
 import service.UserService;
+import service.exception.BusinessException;
 import service.exception.ServiceException;
 import util.Encryptable;
 import util.PasswordEncoder;
@@ -17,12 +24,13 @@ import validator.Verifiable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(UserServiceImpl.class)
+@PowerMockIgnore("javax.management.*")
 public class UserServiceImplTest {
 
-    private UserService userService;
+    private UserService underTest;
     private UserDao userDao;
     private Verifiable<User> validator;
     private Encryptable passwordEncoder;
@@ -30,57 +38,100 @@ public class UserServiceImplTest {
 
     @Before
     public void doSetup() {
-        userDao = mock(UserDao.class);
-        passwordEncoder = mock(PasswordEncoder.class);
+        userDao = Mockito.mock(UserDao.class);
+        passwordEncoder = Mockito.mock(PasswordEncoder.class);
         validator = new UserSignInValidator();
-        userService = new UserServiceImpl(userDao, passwordEncoder, validator);
+        underTest = new UserServiceImpl(userDao, passwordEncoder, validator);
     }
 
     @Test
-    public void shouldSaveUserToDatabaseWhenUserValid() throws PersistException, ServiceException {
-        when(passwordEncoder.encryptMd5WithPostfixSalt(anyString(), anyString())).thenReturn("string");
+    public void shouldReturnNullWhenInputDataInvalid() throws Exception {
+        UserService spyUnderTest = PowerMockito.spy(underTest);
+        PowerMockito.doReturn(false).when(spyUnderTest, ResourceData.IS_VALID_INPUT_DATA_METHOD_NAME, ResourceData.userInstance);
+        PowerMockito.doReturn(ResourceData.SAMPLE_STRING).when(spyUnderTest, ResourceData.ENCRYPT_PASSWORD_METHOD_NAME, ResourceData.userInstance);
+        Mockito.when(userDao.findOneByMailPass(ResourceData.userInstance)).thenReturn(ResourceData.userInstance);
 
-        userService.registration(ResourceData.user);
+        User actualUser = spyUnderTest.findRegisteredUser(ResourceData.userInstance);
+        PowerMockito.verifyPrivate(spyUnderTest, Mockito.times(ResourceData.ONE_TIME)).invoke(ResourceData.IS_VALID_INPUT_DATA_METHOD_NAME, ResourceData.userInstance);
+        PowerMockito.verifyPrivate(spyUnderTest, Mockito.times(ResourceData.ZERO_INTEGER_VALUE)).invoke(ResourceData.ENCRYPT_PASSWORD_METHOD_NAME, ResourceData.userInstance);
+        Mockito.verify(userDao, Mockito.times(ResourceData.ZERO_INTEGER_VALUE)).findOneByMailPass(ResourceData.userInstance);
 
-        verify(userDao, times(ResourceData.NUMBER_1)).create(any(User.class));
-        verify(passwordEncoder, times(ResourceData.NUMBER_1)).encryptMd5WithPostfixSalt(anyString(), anyString());
+        Assert.assertNull(actualUser);
+    }
+
+    @Test
+    public void shouldReturnUserWhenInputDataValidAndUserExists() throws Exception {
+        UserService spyUnderTest = PowerMockito.spy(underTest);
+        PowerMockito.doReturn(true).when(spyUnderTest, ResourceData.IS_VALID_INPUT_DATA_METHOD_NAME, ResourceData.userInstance);
+        PowerMockito.doReturn(ResourceData.SAMPLE_STRING).when(spyUnderTest, ResourceData.ENCRYPT_PASSWORD_METHOD_NAME, ResourceData.userInstance);
+        Mockito.when(userDao.findOneByMailPass(ResourceData.userInstance)).thenReturn(ResourceData.userInstance);
+
+        User actualUser = spyUnderTest.findRegisteredUser(ResourceData.userInstance);
+        PowerMockito.verifyPrivate(spyUnderTest, Mockito.times(ResourceData.ONE_TIME)).invoke(ResourceData.IS_VALID_INPUT_DATA_METHOD_NAME, ResourceData.userInstance);
+        PowerMockito.verifyPrivate(spyUnderTest, Mockito.times(ResourceData.ONE_TIME)).invoke(ResourceData.ENCRYPT_PASSWORD_METHOD_NAME, ResourceData.userInstance);
+        Mockito.verify(userDao, Mockito.times(ResourceData.ONE_TIME)).findOneByMailPass(ResourceData.userInstance);
+        Assert.assertNotNull(actualUser);
+        Assert.assertEquals(actualUser, ResourceData.userInstance);
+    }
+
+    @Test
+    public void shouldCheckUserDuplicatesAndCreateNewEntityWhenMailIsUnique() throws PersistException, ServiceException, BusinessException {
+        Mockito.when(passwordEncoder.encryptMd5WithPostfixSalt(Mockito.anyString(), Mockito.anyString())).thenReturn(ResourceData.SAMPLE_STRING);
+        Mockito.when(userDao.findOneByMail(ResourceData.userInstance)).thenReturn(null);
+        underTest.registration(ResourceData.userInstance);
+
+        Mockito.verify(userDao, Mockito.times(ResourceData.ONE_TIME)).findOneByMail(Mockito.any(User.class));
+        Mockito.verify(userDao, Mockito.times(ResourceData.ONE_TIME)).create(Mockito.any(User.class));
+    }
+
+    @Test(expected = BusinessException.class)
+    public void shouldCheckUserDuplicatesAndThrowNewBusinessExceptionWhenMailIsNotUnique() throws PersistException, ServiceException, BusinessException {
+        Mockito.when(passwordEncoder.encryptMd5WithPostfixSalt(Mockito.anyString(), Mockito.anyString())).thenReturn(ResourceData.SAMPLE_STRING);
+        Mockito.when(userDao.findOneByMail(ResourceData.userInstance)).thenReturn(ResourceData.userInstance);
+        underTest.registration(ResourceData.userInstance);
     }
 
     @Test(expected = ServiceException.class)
-    public void shouldThrowServiceExceptionWhenUserAlreadyExists() throws PersistException, ServiceException {
-        when(passwordEncoder.encryptMd5WithPostfixSalt(anyString(), anyString())).thenReturn("string");
-        when(userDao.findOneByMail(ResourceData.user)).thenThrow(ServiceException.class);
-        userService.registration(ResourceData.user);
+    public void shouldThrowServiceExceptionWhenUserAlreadyExists() throws PersistException, ServiceException, BusinessException {
+        Mockito.when(passwordEncoder.encryptMd5WithPostfixSalt(Mockito.anyString(), Mockito.anyString())).thenReturn(ResourceData.SAMPLE_STRING);
+        Mockito.when(userDao.findOneByMail(ResourceData.userInstance)).thenThrow(PersistException.class);
+        underTest.registration(ResourceData.userInstance);
     }
 
     @Test
     public void shouldDeleteUserWhenUserValid() throws PersistException, ServiceException {
-        userService.delete(ResourceData.user);
-        verify(userDao, times(ResourceData.NUMBER_1)).delete(any(User.class));
+        underTest.delete(ResourceData.userInstance);
+        Mockito.verify(userDao, Mockito.times(ResourceData.ONE_TIME)).delete(Mockito.any(User.class));
     }
 
     @Test
     public void shouldReturnOneUserWhenUserIdValid() throws PersistException, ServiceException {
-        when(userDao.findOne(anyLong())).thenReturn(ResourceData.user);
-        User actualUser = userService.findOneById(ResourceData.ENTITY_ID_1);
-        verify(userDao, times(ResourceData.NUMBER_1)).findOne(ResourceData.ENTITY_ID_1);
+        Mockito.when(userDao.findOne(Mockito.anyLong())).thenReturn(ResourceData.userInstance);
+        User actualUser = underTest.findOneById(ResourceData.ENTITY_ID_1);
+        Mockito.verify(userDao, Mockito.times(ResourceData.ONE_TIME)).findOne(ResourceData.ENTITY_ID_1);
         Long actualUserId = actualUser.getId();
-        Assert.assertEquals(actualUserId, ResourceData.user.getId());
-        Assert.assertEquals(actualUser, ResourceData.user);
+        Assert.assertEquals(actualUserId, ResourceData.userInstance.getId());
+        Assert.assertEquals(actualUser, ResourceData.userInstance);
     }
 
     @Test(expected = ServiceException.class)
     public void shouldThrowServiceExceptionWhenUserValid() throws PersistException, ServiceException {
-        when(userDao.findOne(anyLong())).thenThrow(ServiceException.class);
-        userService.findOneById(ResourceData.ENTITY_ID_1);
+        Mockito.when(userDao.findOne(Mockito.anyLong())).thenThrow(PersistException.class);
+        underTest.findOneById(ResourceData.ENTITY_ID_1);
     }
 
     @Test
     public void shouldReturnEntityList() throws PersistException, ServiceException {
         List<User> expectedList = new ArrayList<>();
-        doReturn(expectedList).when(userDao).findAll();
-        List<User> currentList = userService.findAll();
+        Mockito.doReturn(expectedList).when(userDao).findAll();
+        List<User> currentList = underTest.findAll();
 
         Assert.assertEquals(expectedList, currentList);
+    }
+
+    @Test
+    public void shouldUpdateUserWhenUserValid() throws PersistException, ServiceException, BusinessException {
+        underTest.update(ResourceData.userInstance);
+        Mockito.verify(userDao, Mockito.times(ResourceData.ONE_TIME)).update(ResourceData.userInstance);
     }
 }

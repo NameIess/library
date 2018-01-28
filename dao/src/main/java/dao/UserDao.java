@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDao extends AbstractDao<User> {
-    private static final Logger Log = LogManager.getLogger(UserDao.class.getSimpleName());
-
     private static final int SINGLE_ROW = 1;
     private static final String FIND_ONE_BY_EMAIL_PASS = "SELECT u.id, u.role_id, r.name AS 'rolename', u.employee_number, u.name, u.second_name, u.surname, u.email, u.phone_number, u.passport_series, u.passport_number, u.password" +
             " FROM user AS u " +
@@ -109,7 +107,6 @@ public class UserDao extends AbstractDao<User> {
                 userList.add(user);
             }
         } catch (SQLException e) {
-            Log.error("Error during parsing result set in UserDao");
             throw new PersistException("Trouble in UserDao within parseResultSet", e);
         }
         return userList;
@@ -143,7 +140,6 @@ public class UserDao extends AbstractDao<User> {
             statement.setString(8, password);
 
         } catch (SQLException e) {
-            Log.error("Error during preparing 'USER' insert statement: " + statement);
             throw new PersistException("Trouble in UserDao within prepareStatementForInsert: " + e.getMessage(), e);
 
         }
@@ -181,7 +177,6 @@ public class UserDao extends AbstractDao<User> {
             statement.setLong(9, id);
 
         } catch (SQLException e) {
-            Log.error("Error during preparing 'USER' insert statement: " + statement);
             throw new PersistException("Trouble in UserDao within prepareStatementForInsert", e);
 
         }
@@ -246,13 +241,14 @@ public class UserDao extends AbstractDao<User> {
             throw new PersistException("Error within UserDao findOneByMail(): " + e.getMessage(), e);
         }
 
+        if (result.isEmpty()) {
+            return null;
+        }
+
         if (result.size() > SINGLE_ROW) {
             throw new PersistException("Error within UserDao findOneByMail(): More than one record has been received");
         }
 
-        if (result.isEmpty()) {
-            return null;
-        }
         return result.iterator().next();
     }
 

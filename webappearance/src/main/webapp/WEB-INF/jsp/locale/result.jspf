@@ -1,0 +1,17 @@
+<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setBundle basename="local" var="loc"/>
+<fmt:message bundle="${loc}" key="local.report" var="report"/>
+
+
+<c:set var="success_message_key" value="${successMessage}"/>
+<c:if test="${not empty success_message_key}">
+    <fmt:message bundle="${loc}" key="${success_message_key}" var="success_message"/>
+</c:if>
+
+<c:set var="transfer_error_key" value="${transferError}"/>
+<c:if test="${not empty transfer_error_key}">
+    <fmt:message bundle="${loc}" key="${transfer_error_key}" var="error_message"/>
+    <c:if test="${not empty success_message_key}">
+        ${success_message = null}
+    </c:if>
+</c:if>

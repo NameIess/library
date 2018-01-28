@@ -2,71 +2,90 @@ $(document).ready(function () {
 
     const PASSWORD_PATTERN = /^((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,40})$/;
     const EMAIL_PATTERN = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]+$/;
+    const NAME_PATTERN = /^[a-zA-Z]{2,35}$/;
+
+    const BR_TAG = "<br>";
 
     $("input[name='password']").bind("keyup change", function () {
-        let passwordValue = $("input[name='password']").val();
+        let passwordValue = $(this).val();
         if (!PASSWORD_PATTERN.test(passwordValue)) {
-            $(this).removeClass('not_error');
-            $(this).next('.error_message')
-                .html('Password length must be between 5 and 40 characters<br>Password must contains at least 3 characters one uppercase and digit')
-                .css('color', '#E3000E')
-                .animate({'paddingLeft': '10px'}, 400)
-                .animate({'paddingLeft': '5px'}, 400);
+            $(this).next().removeClass('not_error').addClass('error');
+            let lengthErrorMessage = $("#password_length_message").val();
+            let infoErrorMessage = $("#password_info_message").val();
+            $(this).next('.message').html(lengthErrorMessage + BR_TAG + infoErrorMessage);
         }
         else {
-            $(this).addClass('not_error');
-            $(this).next('.error_message')
-                .text('Done!')
-                .css('color', '#25be2d')
-                .animate({'paddingLeft': '10px'}, 400)
-                .animate({'paddingLeft': '5px'}, 400);
+            $(this).next().removeClass('error').addClass('not_error');
+            let successMessage = $("#general_success_message").val();
+            $(this).next('.message').text(successMessage);
         }
     });
 
     $("input[name='confirm_password']").bind("keyup change", function () {
         let pass = $("input[name='password']").val();
-        let confirmPass = $("input[name='confirm_password']").val();
+        let confirmPass = $(this).val();
         if (!PASSWORD_PATTERN.test(confirmPass) || pass.toString() !== confirmPass.toString()) {
-            $(this).removeClass('not_error');
-            $(this).next('.error_message')
-                .html('Passwords don\'t match<br>')
-                .css('color', '#E3000E')
-                .animate({'paddingLeft': '10px'}, 400)
-                .animate({'paddingLeft': '5px'}, 400);
-        }
-        else {
-            $(this).addClass('not_error');
-            $(this).next('.error_message')
-                .text('Done!')
-                .css('color', '#25be2d')
-                .animate({'paddingLeft': '10px'}, 400)
-                .animate({'paddingLeft': '5px'}, 400);
+            $(this).next().removeClass('not_error').addClass('error');
+            let errorMessage = $("#passwords_dont_match_message").val();
+            $(this).next('.message').text(errorMessage);
+        } else if (confirmPass.length === 0) {
+            $(this).next().removeClass('not_error').addClass('error');
+            let errorMessage = $("#required_field_message").val();
+            $(this).next('.message').text(errorMessage);
+        } else {
+            $(this).next().removeClass('error').addClass('not_error');
+            let successMessage = $("#general_success_message").val();
+            $(this).next('.message').text(successMessage);
         }
     });
 
     $("input[name='email']").bind("keyup change", function () {
-        let emailValue = $("input[name='email']").val();
-        if (!EMAIL_PATTERN.test(emailValue) || emailValue.length === 0) {
-            $(this).removeClass('not_error');
-            $(this).next('.error_message').html('Invalid email address.')
-                .css('color', '#E3000E')
-                .animate({'paddingLeft': '10px'}, 400)
-                .animate({'paddingLeft': '5px'}, 400);
+        let emailValue = $(this).val();
+        if (!EMAIL_PATTERN.test(emailValue) || emailValue.length > 255) {
+            $(this).next().removeClass('not_error').addClass('error');
+            let errorMessage = $("#email_error_message").val();
+            $(this).next('.message').text(errorMessage);
         }
         else {
-            $(this).addClass('not_error');
-            $(this).next('.error_message').text('Done!')
-                .css('color', '#25be2d')
-                .animate({'paddingLeft': '10px'}, 400)
-                .animate({'paddingLeft': '5px'}, 400);
+            $(this).next().removeClass('error').addClass('not_error');
+            let successMessage = $("#general_success_message").val();
+            $(this).next('.message').text(successMessage);
         }
     });
 
+    $("input[name$='name']").bind("keyup change", function () {
+        let inputValue = $(this).val();
+        if (!NAME_PATTERN.test(inputValue)) {
+            $(this).next().removeClass('not_error').addClass('error');
+            let errorMessage = $("#name_length_message").val();
+            $(this).next('.message').text(errorMessage);
+        }
+        else {
+            $(this).next().removeClass('error').addClass('not_error');
+            let successMessage = $("#general_success_message").val();
+            $(this).next('.message').text(successMessage);
+        }
+    });
+
+    $(".verifiable.not_null").bind("keyup change", function () {
+        let inputValue = $(this).val();
+        if (inputValue.length === 0) {
+            $(this).next().removeClass('not_error').addClass('error');
+            let errorMessage = $("#required_field_message").val();
+            $(this).next('.message').text(errorMessage);
+        }
+        else {
+            $(this).next().removeClass('error').addClass('not_error');
+            let successMessage = $("#general_success_message").val();
+            $(this).next('.message').text(successMessage);
+        }
+    });
 
     $('.validated_form').submit(function (e) {
         if ($('.not_error').length !== $('.verifiable').length) {
             e.preventDefault();
             $(this).closest('form').find('input').not(':button, :submit, :reset, :hidden').trigger('change');
+
         }
     });
 

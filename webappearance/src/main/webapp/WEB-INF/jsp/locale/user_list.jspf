@@ -1,0 +1,15 @@
+<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setBundle basename="local" var="loc"/>
+<fmt:message bundle="${loc}" key="local.registred_users" var="registred_users"/>
+<fmt:message bundle="${loc}" key="local.id" var="entity_id"/>
+<fmt:message bundle="${loc}" key="local.role_id" var="role_id"/>
+<fmt:message bundle="${loc}" key="local.personnel_number" var="personnel_number"/>
+<fmt:message bundle="${loc}" key="local.name" var="name"/>
+<fmt:message bundle="${loc}" key="local.second_name" var="second_name"/>
+<fmt:message bundle="${loc}" key="local.surname" var="surname"/>
+<fmt:message bundle="${loc}" key="local.email" var="mail"/>
+<fmt:message bundle="${loc}" key="local.phone_number" var="phone_number"/>
+<fmt:message bundle="${loc}" key="local.passport_series" var="passport_series"/>
+<fmt:message bundle="${loc}" key="local.passport_number" var="passport_number"/>
+<fmt:message bundle="${loc}" key="local.delete" var="delete"/>
+<fmt:message bundle="${loc}" key="local.edit" var="edit"/>

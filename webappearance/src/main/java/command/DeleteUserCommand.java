@@ -2,15 +2,13 @@ package command;
 
 import command.exception.ActionException;
 import model.User;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import service.UserService;
 import service.exception.ServiceException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 public class DeleteUserCommand extends AbstractActionCommand {
-    private static final Logger Log = LogManager.getLogger(DeleteUserCommand.class.getSimpleName());
     private UserService userService;
 
     public DeleteUserCommand(UserService userService) {
@@ -22,11 +20,13 @@ public class DeleteUserCommand extends AbstractActionCommand {
         User user = parseRequestData(request);
         try {
             userService.delete(user);
+            HttpSession session = request.getSession(false);
+            session.setAttribute(Message.SUCCESS.toString(), Message.USER_DELETED.toString());
         } catch (ServiceException e) {
             throw new ActionException("Error within DeleteUserCommand execute(): " + e.getMessage(), e);
         }
 
-        String path = buildPathMap(Page.REDIRECT, Page.ADMIN_PANEL);
+        String path = buildPathMap(Page.REDIRECT, Page.RESULT);
         return path;
     }
 

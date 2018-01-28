@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>User sign in validator test suite</title>
+    <link rel="stylesheet" href="//code.jquery.com/qunit/qunit-1.14.0.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.min.js"></script>
+    <script src="//code.jquery.com/qunit/qunit-1.14.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mockjax/1.6.2/jquery.mockjax.min.js"></script>
+
+    <!-- Файл вашего проекта  -->
+    <script type="text/javascript" src="resources/user_validator.js"></script>
+    <!-- Файл ваших тестов -->
+    <script type="text/javascript" src="sign_in_validation_test.js"></script>
+</head>
+
+<body>
+
+<h1 id="qunit-header">Test Suite</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+
+<h2 id="qunit-userAgent"></h2>
+
+<ol id="qunit-tests"></ol>
+
+<div id="qunit-dom-testing" style="display: none">
+
+    <form class="validated_form" name="loginForm">
+        <input type="hidden" name="command" value="user_sign_in"/>
+        <div class="registration_group">
+            <input type="text" class="verifiable" name="email" id="email" placeholder="${mail}"/>
+            <strong class="message"></strong>
+        </div>
+        <div class="registration_group">
+            <input type="password" class="verifiable" name="password" id="password" placeholder="${password}"/>
+            <strong class="message"></strong>
+        </div>
+
+        <input class="submit_button" type="submit" name="submit" value="${submit_button}"/>
+    </form>
+
+</div>
+</body>
+</html>

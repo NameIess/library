@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 public class AuthorizationCommand extends AbstractActionCommand {
     private static final Logger Log = LogManager.getLogger(AuthorizationCommand.class.getSimpleName());
+    private static final String ERROR_AUTHORIZATION_MESSAGE_ATTRIBUTE = "errorAuthorizationMessage";
     private UserService userService;
 
     public AuthorizationCommand(UserService userService) {
@@ -22,19 +23,22 @@ public class AuthorizationCommand extends AbstractActionCommand {
     @Override
     public String execute(HttpServletRequest request) throws ActionException {
         User user = parseRequestData(request);
-        String path = Page.EMPTY.toString();
         try {
             user = userService.findRegisteredUser(user);
-            if (user != null) {
-                Log.debug("Open session for user: " + user);
-                HttpSession session = request.getSession(true);
-                session.setAttribute(User.TABLE_NAME, user);
-                path = path.concat(getHomePageByRole(request));
-            } else {
-                path = path.concat(Page.REDIRECT.toString() + Page.ERROR.toString());
-            }
         } catch (ServiceException e) {
             throw new ActionException("Error within AuthorizationCommand execute(): " + e.getMessage(), e);
+        }
+
+        String path;
+        if (user != null) {
+            Log.debug("Open session for user: " + user);
+            HttpSession session = request.getSession(true);
+            session.setAttribute(User.TABLE_NAME, user);
+            session.setAttribute(Message.SUCCESS.toString(), Message.AUTHENTICATED_SUCCESSFULLY.toString());
+            path = buildPathMap(Page.REDIRECT, Page.RESULT);
+        } else {
+            request.setAttribute(ERROR_AUTHORIZATION_MESSAGE_ATTRIBUTE, Message.INVALID_LOGIN_OR_PASSWORD.toString());
+            path = buildPathMap(Page.FORWARD, Page.USER_SIGN_IN);
         }
 
         return path;

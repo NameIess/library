@@ -10,7 +10,6 @@ import service.exception.ServiceException;
 import javax.servlet.http.HttpServletRequest;
 
 public class AddBookToCartCommand extends AbstractActionCommand {
-    private static final Logger Log = LogManager.getLogger(AddBookToCartCommand.class.getSimpleName());
     private BookService bookService;
 
     public AddBookToCartCommand(BookService bookService) {

@@ -104,15 +104,16 @@ header h1 span {
 	padding: 15px 28px 12px;
 }
 
-#body div.registration_group {
+
+#body .registration_group {
 	margin-bottom: 30px;
 }
-#body {
+body {
 	margin: 0;
 	padding: 0 0 30px;
 	text-align: center;
 }
-#body h2 {
+body h2 {
 	color: #fff;
 	display: inline;
 	font-family: poller_oneregular;
@@ -122,10 +123,14 @@ header h1 span {
 	padding: 0;
 	text-transform: uppercase;
 }
-#body h2 span {
+body h2 span {
 	background: #252525;
 	display: inline-block;
 	padding: 15px 28px 12px;
+}
+#error_message, #success_message {
+	margin: 50px;
+	font-size: 18px;
 }
 #body form {
 	margin: 0 auto;
@@ -146,9 +151,22 @@ header h1 span {
 input::placeholder {
 	text-transform: uppercase;
 }
-.error_message {
+.message {
 	display: block;
+	color: #E3000E;
 }
+.message.cart_strong {
+	margin: 10px 0 15px 0;
+	text-transform: none;
+}
+.message.error {
+	color: #E3000E;
+}
+.message.not_error {
+	color: #25be2d;
+}
+
+
 #body form textarea {
 	height: 175px;
 	overflow: auto;
@@ -162,19 +180,35 @@ input::placeholder {
 	font-weight: normal;
 	display: inline-block;
 	padding: 20px 28px;
+	margin: 0;
 	width: auto;
 	text-transform: uppercase;
+}
+#body form .submit_button.small_button {
+	padding: 8px 8px;
+}
+#body form .submit_button.bordered_button {
+	margin: 20px 0 15px 0;
 }
 #body form .submit_button:hover {
 	background: #88B04B;
 	color: #fff;
 	cursor: pointer;
 }
+#body form .delete_button:hover {
+	background: #AB2803;
+	color: #fff;
+	cursor: pointer;
+}
 #body table {
 	border-collapse: collapse;
 	width: 1000px;
-	margin: 0 auto;
+	margin: 0 0 0 -180px;
 }
+#body table.wide_table {
+	margin: 0 0 0 -310px;
+}
+
 td {
 	vertical-align: middle;
 	child-align: middle;
@@ -194,29 +228,38 @@ tr:hover {background-color: #f9f9f9;}
 
 #body form table, th, td {
 	border: 1px solid #252525;
-	padding: 9px;
-	text-align: match-parent;
-	/*border-bottom: 1px solid #252525;*/
+	padding: 5px;
+	text-align: center;
 }
 #body form td form {
 	width: inherit;
+	height: inherit;
 	padding: 0;
 	margin: 0;
 }
 
 
-#body div.cart {
-	/*margin: 0;*/
-	/*padding: 24px 0 0 0;*/
-	width: 940px;
+.cart {
+	padding: 24px 0 0 0;
+	width: 750px;
 	border: 2px solid #1a1a1a;
 	display: block;
 	list-style: none;
 	margin: 24px auto;
+	text-transform: uppercase;
 }
 
 
-#foot_up {
+.book_data p {
+	font-weight: bold;
+	text-align: left;
+	padding: 5px 0 0 20px;
+}
+
+.subscription {
+	margin: 0 0 15px 0;
+}
+.foot_up {
 	padding-bottom: 170px;
 }
 
@@ -289,13 +332,17 @@ footer article ul li #vk:hover {
 	line-height: 3;
 	background: #2c3e50;
 	border-radius: .25em;
+	width: 596px;
+	margin: 0 0 0 10px;
 }
 .wide_select {
 	background: #2c3e50;
-	width: 596px;
+	width: 100%;
+	height: 100%;
 	color: #fff;
 	cursor: pointer;
 	text-align: center;
+	margin: 0 0 0 1px;
 }
 
 .select::after {
@@ -320,13 +367,13 @@ footer article ul li #vk:hover {
 	font-size: 20px;
 	top: 20px;
 	left: 591px;
+	cursor: pointer;
 }
 
 #time_pick, .clear {
 	display: none;
 }
 
-/* Base for label styling */
 [type="checkbox"]:not(:checked),
 [type="checkbox"]:checked {
 	position: absolute;
@@ -339,7 +386,6 @@ footer article ul li #vk:hover {
 	cursor: pointer;
 }
 
-/* checkbox aspect */
 [type="checkbox"]:not(:checked) + label:before,
 [type="checkbox"]:checked + label:before {
 	content: '';
@@ -351,7 +397,7 @@ footer article ul li #vk:hover {
 	border-radius: 4px;
 	box-shadow: inset 0 1px 3px #e2e2e2;
 }
-/* checked mark aspect */
+
 [type="checkbox"]:not(:checked) + label:after,
 [type="checkbox"]:checked + label:after {
 	content: '✔';

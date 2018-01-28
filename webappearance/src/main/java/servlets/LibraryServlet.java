@@ -2,9 +2,10 @@ package servlets;
 
 import command.ActionCommand;
 import command.ActionFactory;
+import command.Message;
 import command.Page;
 import command.exception.ActionException;
-import daofactory.DaoFactory;
+import connection.DbConnectionPool;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import util.RequestManager;
@@ -28,6 +29,12 @@ public class LibraryServlet extends HttpServlet {
         factory = new ActionFactory();
     }
 
+    @Override
+    public void destroy() {
+        super.destroy();
+        DbConnectionPool pool = DbConnectionPool.getInstance();
+        pool.releasePool();
+    }
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -37,30 +44,29 @@ public class LibraryServlet extends HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String actionName = RequestManager.getActionName(request);
         ActionCommand command = factory.defineCommand(actionName);
-        String page = null;
+        String page;
         try {
             page = command.execute(request);
+
+            Log.debug("Page " + page + " has been received from command");
+            if (page != null && page.startsWith(Page.REDIRECT.toString())) {
+                redirect(page, response);
+            } else if (page != null && page.startsWith(Page.FORWARD.toString())) {
+                forward(request, response, page);
+            } else {
+                response.sendError(response.SC_BAD_REQUEST, Message.FATAL_ERROR.toString());
+            }
         } catch (ActionException e) {
-            request.setAttribute("message", e.getMessage());
-            String forwardErrorPage = Page.FORWARD.toString() + Page.ERROR.toString();
-            forwardErrorPage = buildUrl(forwardErrorPage);
-            forward(request, response, forwardErrorPage);
-        }
-
-        Log.debug("Page has been received from command: " + page);
-        if (page != null && page.startsWith(Page.REDIRECT.toString())) {
-            redirect(page, response);
-
-        } else if (page != null && page.startsWith(Page.FORWARD.toString())) {
-            page = buildUrl(page);
-            forward(request, response, page);
+            Log.error("Error during action execution. " + e.getMessage());
+            response.sendError(response.SC_INTERNAL_SERVER_ERROR, Message.FATAL_ERROR.toString());
         }
     }
 
     private void forward(HttpServletRequest request, HttpServletResponse response, String page) throws ServletException, IOException {
-        Log.debug("Forward to: " + page);
+        page = buildUrl(page);
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);
         dispatcher.forward(request, response);
+        Log.debug("Forward to: " + page);
     }
 
     private void redirect(String page, HttpServletResponse response) throws IOException {
@@ -71,10 +77,8 @@ public class LibraryServlet extends HttpServlet {
     }
 
     private String buildUrl(String page) {
-        Log.debug("Current page before building: " + page);
         String url = page.substring(Page.FORWARD.toString().length());
         String path = Page.VIEWS_PATH + url + Page.JSP_EXTENSION;
-        Log.debug("Full path: " + path);
         return path;
     }
 

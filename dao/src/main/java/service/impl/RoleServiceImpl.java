@@ -3,12 +3,15 @@ package service.impl;
 import dao.RoleDao;
 import dao.exception.PersistException;
 import model.Role;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import service.RoleService;
 import service.exception.ServiceException;
 
 import java.util.List;
 
 public class RoleServiceImpl implements RoleService {
+    private static final Logger Log = LogManager.getLogger(RoleServiceImpl.class.getSimpleName());
     private RoleDao roleDao;
 
     public RoleServiceImpl(RoleDao roleDao) {
@@ -25,6 +28,7 @@ public class RoleServiceImpl implements RoleService {
         } finally {
             roleDao.releaseConnection();
         }
+        Log.info("Roles " + roleList + " have been received from DB");
         return roleList;
     }
 
@@ -38,6 +42,7 @@ public class RoleServiceImpl implements RoleService {
         } finally {
             roleDao.releaseConnection();
         }
+        Log.info("Role " + role + " has been received from DB by ID - " + id);
         return role;
     }
 
@@ -47,6 +52,8 @@ public class RoleServiceImpl implements RoleService {
             roleDao.startTransaction();
             roleDao.update(role);
             roleDao.commit();
+
+            Log.info("Role has been updated");
         } catch (PersistException e) {
             roleDao.rollback();
             throw new ServiceException("Error within RoleService update(): " + e.getMessage(), e);
@@ -60,6 +67,7 @@ public class RoleServiceImpl implements RoleService {
     public void delete(Role role) throws ServiceException {
         try {
             roleDao.delete(role);
+            Log.info("Role " + role + " has been removed from DB");
         } catch (PersistException e) {
             throw new ServiceException("Error within RoleService delete(): " + e.getMessage(), e);
         } finally {

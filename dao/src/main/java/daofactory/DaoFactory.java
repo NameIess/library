@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Properties;
 
 public class DaoFactory implements Connectable {
-    private static final Logger Log = LogManager.getLogger(DaoFactory.class.getSimpleName());
     private static final String DATABASE_RESOURCE_FILE_NAME = "database.properties";
     private static final String JDBC_URL = "jdbc.url";
     private static final String JDBC_USERNAME = "jdbc.username";

@@ -1,6 +1,8 @@
 package model;
 
-public class Role implements Identified {
+import java.io.Serializable;
+
+public class Role implements Identified, Serializable {
     public static final String ID_ALIAS = "id";
     public static final String NAME_ALIAS = "name";
     public static final String FOREIGN_KEY_ID_ALIAS = "role_id";
@@ -37,5 +39,31 @@ public class Role implements Identified {
         sb.append(", name='").append(name).append('\'');
         sb.append('}');
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof Role)) {
+            return false;
+        }
+
+        Role role = (Role) o;
+
+        if (id != null ? !id.equals(role.id) : role.id != null) {
+            return false;
+        }
+
+        return name != null ? name.equals(role.name) : role.name == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 }

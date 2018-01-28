@@ -1,0 +1,12 @@
+<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setBundle basename="local" var="loc"/>
+<fmt:message bundle="${loc}" key="local.library" var="library"/>
+<fmt:message bundle="${loc}" key="local.my_books" var="my_books"/>
+<fmt:message bundle="${loc}" key="local.registred_users" var="users"/>
+<fmt:message bundle="${loc}" key="local.receipts" var="receipts"/>
+<fmt:message bundle="${loc}" key="local.sign_in" var="sign_in"/>
+<fmt:message bundle="${loc}" key="local.receipts" var="receipts"/>
+<fmt:message bundle="${loc}" key="local.registration" var="registration"/>
+<fmt:message bundle="${loc}" key="local.logout" var="logout"/>
+<fmt:message bundle="${loc}" key="local.footer.text" var="footer"/>
+<fmt:message bundle="${loc}" key="locale.language" var="language"/>

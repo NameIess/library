@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class DataReader {
-    private static final Logger log = LogManager.getLogger(DataReader.class.getSimpleName());
+    private static final Logger Log = LogManager.getLogger(DataReader.class.getSimpleName());
     private Properties props;
 
 
@@ -19,7 +19,7 @@ public class DataReader {
 
     public Properties parse(String filePath) {
         if (filePath == null) {
-            log.log(Level.ERROR, "Null pointer path");
+            Log.log(Level.ERROR, "Null pointer path");
             return null;
         }
 
@@ -27,9 +27,9 @@ public class DataReader {
             String path = this.getClass().getClassLoader().getResource(filePath).getPath();
             props.load(new FileReader(path));
 
-            log.info("Data has been read from " + filePath);
+            Log.info("Data has been read from " + filePath);
         } catch (IOException e) {
-            log.log(Level.FATAL, "ReaderException: " + e.getMessage(), e);
+            Log.log(Level.FATAL, "ReaderException: " + e.getMessage(), e);
         }
 
         return props;
