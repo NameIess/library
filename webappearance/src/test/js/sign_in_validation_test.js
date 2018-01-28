@@ -26,21 +26,14 @@ test("Positive email test", function () {
 
 test("Negative email test", function () {
     const INVALID_EMAIL_MIN_LENGTH_BORDERED = "d@.s";
-    const INVALID_EMAIL_MAX_LENGTH_BORDERED = "fasdf3qe6kfasdf3qe6kfasdfqe6k2351fdsfasdf3qe6kfasdf3qe6kfasdfqe6k2351fdsdffasdf3qe6kfasdf3qe6kfasdfqe6kfasdf3qe6kfasdf3qe6kfasdfqe6k2351fdsdffasdf3qe6kfasdf3qe6kfasdfqe6kdffasdf3qe6kfasdf3qe6kfasdfqe6ke6kfasdfqe6kdffasdf3qv53scvsvve6kfasdf3fase6k@gmail.com";
     const INVALID_EMAIL_MIN_LENGTH_EQUIVALENT = "";
-    const INVALID_EMAIL_MAX_LENGTH_EQUIVALENT = "fasdf3qe6kfasdf3qe6kfasdfqe6k2351fdsfasdf3qe6kfasdf3qe6kfasdfqe6k2351fdsdffasdf3qe6kfasdf3qe6kfasdfqe6kfasdf3qe6kfasdf3qe6kfasdfqe6k2351fdsdffasdf3qe6kfasdf3qe6kfasdfqe6kdffasdf3qEasterEggInsideTheLongestEmailEvere6kfasdf3qe6kfasdfqe6ke6kfasdfqe6kdffasdf3qv53scvsvve6kfasdf3fase6k@gmail.com";
 
     $("#email").val(INVALID_EMAIL_MIN_LENGTH_BORDERED).change();
     equal($("#email").next('.message').hasClass(ERROR_CLASS), true, "Invalid email. 4 symbols. Min length value.");
 
-    // $("#email").val(INVALID_EMAIL_MAX_LENGTH_BORDERED).change();
-    // equal($("#email").next('.message').hasClass(ERROR_CLASS), true, "Invalid email. 256 symbols. Max length value.");
 
     $("#email").val(INVALID_EMAIL_MIN_LENGTH_EQUIVALENT).change();
     equal($("#email").next('.message').hasClass(ERROR_CLASS), true, "Invalid email. Empty string. Min equivalent value.");
-
-    // $("#email").val(INVALID_EMAIL_MAX_LENGTH_EQUIVALENT).change();
-    // equal($("#email").next('.message').hasClass(ERROR_CLASS), true, "Invalid email. 290 symbols. Max equivalent value.");
 });
 
 test("Positive password test", function () {

@@ -6,6 +6,7 @@ import command.Message;
 import command.Page;
 import command.exception.ActionException;
 import connection.DbConnectionPool;
+import connection.exception.DbConnectionPoolException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import util.RequestManager;
@@ -56,7 +57,7 @@ public class LibraryServlet extends HttpServlet {
             } else {
                 response.sendError(response.SC_BAD_REQUEST, Message.FATAL_ERROR.toString());
             }
-        } catch (ActionException e) {
+        } catch (ActionException | DbConnectionPoolException e) {
             Log.error("Error during action execution. " + e.getMessage());
             response.sendError(response.SC_INTERNAL_SERVER_ERROR, Message.FATAL_ERROR.toString());
         }
