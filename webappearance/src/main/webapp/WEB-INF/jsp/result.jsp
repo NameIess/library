@@ -7,8 +7,8 @@
 <t:wrapper title="${report}">
     <h2><span>${report}</span></h2>
 
-    <strong id="error_message" class="message">${error_message}</strong>
-    <strong id="success_message" class="message not_error">${success_message}</strong>
+    <strong id="error_message" class="message error">${error_message}</strong>
+    <strong id="success_message" class="message success">${success_message}</strong>
 
 </t:wrapper>
 

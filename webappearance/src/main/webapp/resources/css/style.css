@@ -14,7 +14,12 @@
 		 url('../fonts/leckerlione/leckerlione-regular-webfont.ttf') format('truetype'),
 		 url('../fonts/leckerlione/leckerlione-regular-webfont.svg#leckerli_oneregular') format('svg');
 }
-
+html {
+	position: relative;
+	min-height: 100%;
+	margin: 0;
+	padding: 0;
+}
 body {
 	background: #fff;
 	font-family: Arial, Helvetica, sans-serif;
@@ -23,7 +28,12 @@ body {
 	line-height: 1;
 	margin: 0;
 	min-width: 960px;
-	padding: 0;
+	padding: 0 0 30px;
+	text-align: center;
+	height: auto;
+}
+#date_pick {
+	text-align: center;
 }
 p {
 	color: #252525;
@@ -105,13 +115,8 @@ header h1 span {
 }
 
 
-#body .registration_group {
+.container .registration_group {
 	margin-bottom: 30px;
-}
-body {
-	margin: 0;
-	padding: 0 0 30px;
-	text-align: center;
 }
 body h2 {
 	color: #fff;
@@ -132,12 +137,15 @@ body h2 span {
 	margin: 50px;
 	font-size: 18px;
 }
-#body form {
+.container form {
 	margin: 0 auto;
 	padding: 24px 0 0;
 	width: 620px;
 }
-#body form input, #body form textarea {
+#main_content {
+	padding-bottom: 100px;
+}
+.container form input, .container form textarea {
 	border: 2px solid #252525;
 	color: #252525;	
 	font-family: Arial, Helvetica, sans-serif;
@@ -153,6 +161,11 @@ input::placeholder {
 }
 .message {
 	display: block;
+}
+.message.success {
+	color: #25be2d;
+}
+.message.fault {
 	color: #E3000E;
 }
 .message.cart_strong {
@@ -165,14 +178,12 @@ input::placeholder {
 .message.not_error {
 	color: #25be2d;
 }
-
-
-#body form textarea {
-	height: 175px;
-	overflow: auto;
-	resize: none;
+.message.info {
+	color: #252525;
+	margin: 10px 0 15px 0;
+	text-transform: none;
 }
-#body form .submit_button {
+.container form .submit_button {
 	background: #252525;
 	color: #fff;
 	font-family: "Arial Black", Gadget, sans-serif;
@@ -184,28 +195,28 @@ input::placeholder {
 	width: auto;
 	text-transform: uppercase;
 }
-#body form .submit_button.small_button {
+.container form .submit_button.small_button {
 	padding: 8px 8px;
 }
-#body form .submit_button.bordered_button {
+.container form .submit_button.bordered_button {
 	margin: 20px 0 15px 0;
 }
-#body form .submit_button:hover {
+.container form .submit_button:hover {
 	background: #88B04B;
 	color: #fff;
 	cursor: pointer;
 }
-#body form .delete_button:hover {
+.container form .delete_button:hover {
 	background: #AB2803;
 	color: #fff;
 	cursor: pointer;
 }
-#body table {
+.container table {
 	border-collapse: collapse;
 	width: 1000px;
 	margin: 0 0 0 -180px;
 }
-#body table.wide_table {
+.container table.wide_table {
 	margin: 0 0 0 -310px;
 }
 
@@ -226,19 +237,17 @@ th {
 
 tr:hover {background-color: #f9f9f9;}
 
-#body form table, th, td {
+.container form table, th, td {
 	border: 1px solid #252525;
 	padding: 5px;
 	text-align: center;
 }
-#body form td form {
+.container form td form {
 	width: inherit;
 	height: inherit;
 	padding: 0;
 	margin: 0;
 }
-
-
 .cart {
 	padding: 24px 0 0 0;
 	width: 750px;
@@ -248,29 +257,23 @@ tr:hover {background-color: #f9f9f9;}
 	margin: 24px auto;
 	text-transform: uppercase;
 }
-
-
 .book_data p {
 	font-weight: bold;
 	text-align: left;
 	padding: 5px 0 0 20px;
 }
-
 .subscription {
 	margin: 0 0 15px 0;
 }
-.foot_up {
-	padding-bottom: 170px;
-}
-
 footer {
 	background: #252525;
 	margin: 0;
-	padding: 34px 0 40px;
-	position: fixed;
-	left: 0; bottom: 0;
+	padding: 10px 0 10px;
+	position: absolute;
+	right: 0;
+	left: 0;
+	bottom: 0;
 	width: 100%;
-
 }
 footer article {
 	margin: 0 auto;
@@ -319,13 +322,6 @@ footer article ul li #googleplus {
 footer article ul li #googleplus:hover {
 	background-position: -44px -88px;
 }
-footer article ul li #vk {
-	background-position: 0 -132px;
-}
-footer article ul li #vk:hover {
-	background-position: -44px -132px;
-}
-
 .select {
 	position: relative;
 	height: 3em;

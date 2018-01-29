@@ -66,6 +66,7 @@
                 <strong class="message"></strong>
             </div>
         </c:if>
+
         <div class="registration_group">
             <input type="text" name="phone_number" title="${phone_number}" value="${requestScope.edit_user.phoneNumber}" id="phone_number" placeholder="${phone_number}">
             <strong class="message"></strong>
@@ -74,7 +75,6 @@
             <input type="text" class="verifiable not_null" name="passport_series" title="${passport_series}" value="${requestScope.edit_user.passportSeries}" id="passport_series" placeholder="${passport_series}">
             <strong class="message"></strong>
         </div>
-
         <div class="registration_group">
             <input type="text" class="verifiable not_null" name="passport_number" title="${passport_number}" value="${requestScope.edit_user.passportNumber}" id="passport_number" placeholder="${passport_number}">
             <strong class="message"></strong>

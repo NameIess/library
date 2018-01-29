@@ -4,11 +4,11 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd">
     <tlib-version>1.0</tlib-version>
-    <short-name>ctg</short-name>
+    <short-name>dt</short-name>
     <uri>customtags</uri>
     <tag>
         <name>info-time</name>
-        <tag-class>util.tag.DayTimeTag</tag-class>
+        <tag-class>com.epam.training.library.viewlayer.util.tag.DayTimeTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>locale</name>

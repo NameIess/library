@@ -85,7 +85,6 @@ $(document).ready(function () {
         if ($('.not_error').length !== $('.verifiable').length) {
             e.preventDefault();
             $(this).closest('form').find('input').not(':button, :submit, :reset, :hidden').trigger('change');
-
         }
     });
 

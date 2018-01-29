@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>User registration validator test suite</title>
+    <title>User registration com.epam.training.library.daolayer.validator test suite</title>
     <link rel="stylesheet" href="//code.jquery.com/qunit/qunit-1.14.0.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.min.js"></script>
@@ -29,7 +29,7 @@
 
     <form class="validated_form" name="registration_form" method="POST"
           action="${pageContext.request.contextPath}/libraryDispatcher">
-        <input type="hidden" name="command" value="${command}"/>
+        <input type="hidden" name="command" value="${com.epam.training.library.viewlayer.command}"/>
 
         <div class="registration_group">
             <input type="text" class="verifiable" name="name" title="${first_name}"

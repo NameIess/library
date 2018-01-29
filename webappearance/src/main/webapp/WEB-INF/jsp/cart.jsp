@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="time" uri="/WEB-INF/tld/dayTime.tld" %>
 <%@ include file="locale/cart.jspf" %>
@@ -27,11 +27,13 @@
                     <label for="subscription">${subscribe}</label>
                 </div>
                 <p>${current_time} <b><time:info-time locale="${sessionScope.locale}"/></b></p>
+                <br>
+                <p class="message info">${choose_date}</p>
                 <input type="date" name="" id="date_pick">
                 <input class="timepicker" name="" type="text" id="time_pick">
                 <strong id="cart_message_date" class="message cart_strong"></strong>
                 <input type="number" name="quantity" min="1" max=${requestScope.book.amount} step="1" title="${order_quantity}" placeholder="${order_quantity}">
-                <strong id="cart_message" class="message cart_strong"></strong>
+                <strong id="cart_message_amount" class="message cart_strong"></strong>
 
                 <input class="submit_button bordered_button" type="submit" value="${order_now}"/>
             </form>

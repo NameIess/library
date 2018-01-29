@@ -69,9 +69,9 @@
     </nav>
     <hr>
 </header>
-<main id="body">
+<main id="main_content" class="container">
     <jsp:doBody/>
-    <div class="foot_up"></div>
+    <%--<div class="foot_up"></div>--%>
 </main>
 <footer id="footer">
     <article>

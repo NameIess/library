@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO">
-    <Appenders>
+<configuration>
+    <properties>
+        <property name="pattern">%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</property>
+
+    </properties>
+    <appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <PatternLayout pattern="${pattern}"/>
         </Console>
-        <File name="MyFile" fileName="DaoTrace.log" immediateFlush="false" append="false">
-            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-        </File>
-    </Appenders>
-    <Loggers>
-        <Root level="debug">
-            <AppenderRef ref="Console"/>
-            <AppenderRef ref="MyFile"/>
-        </Root>
-    </Loggers>
-</Configuration>
+        <RollingFile name="RollingFile" fileName="${catalina.base}/logs/dao.log"
+                     filePattern="logs/$${date:yyyy-MM}/${name}-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout>
+                <pattern>${pattern}</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+        </RollingFile>
+    </appenders>
+    <loggers>
+        <root level="debug"> <!-- We log everything -->
+            <appender-ref ref="Console"/> <!-- To console -->
+            <appender-ref ref="RollingFile"/> <!-- And to a rotated file -->
+        </root>
+    </loggers>
+</configuration>

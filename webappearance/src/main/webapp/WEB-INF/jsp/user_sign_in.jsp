@@ -7,7 +7,7 @@
 <t:wrapper title="${sign_in}">
     <h2><span>${sign_in}</span></h2>
 
-    <strong id="success_message" class="message">${success_message}</strong>
+    <strong id="success_message" class="message success">${success_message}</strong>
 
     <form class="validated_form" name="loginForm" method="POST" action="${pageContext.request.contextPath}/libraryDispatcher">
         <input type="hidden" name="command" value="user_sign_in"/>

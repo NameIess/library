@@ -1,9 +1,9 @@
 package resources;
 
-import model.Book;
-import model.Receipt;
-import model.Role;
-import model.User;
+import com.epam.training.library.daolayer.model.Book;
+import com.epam.training.library.daolayer.model.Receipt;
+import com.epam.training.library.daolayer.model.Role;
+import com.epam.training.library.daolayer.model.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
