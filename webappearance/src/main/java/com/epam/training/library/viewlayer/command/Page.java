@@ -6,6 +6,7 @@ public enum  Page {
     FORWARD ("forward:"),
     CART ("cart"),
     USER_REGISTRATION ("user_registration"),
+    BOOK_REGISTRATION("book_registration"),
     USER_SIGN_IN ("user_sign_in"),
     RESULT ("result"),
     LIBRARY_HOME ("library_home"),

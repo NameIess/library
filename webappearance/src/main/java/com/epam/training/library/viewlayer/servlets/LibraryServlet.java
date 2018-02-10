@@ -28,14 +28,13 @@ public class LibraryServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
-        factory = new ActionFactory();
+        factory = ActionFactory.getInstance();
     }
 
     @Override
     public void destroy() {
         super.destroy();
-        DbConnectionPool pool = DbConnectionPool.getInstance();
-        pool.releasePool();
+        DbConnectionPool.releasePoolAndConnections();
     }
 
     @Override
@@ -50,7 +49,7 @@ public class LibraryServlet extends HttpServlet {
         try {
             page = command.execute(request);
 
-            Log.debug("Page " + page + " has been received from command");
+            Log.info("Page " + page + " has been received from command");
             if (page != null && page.startsWith(Page.REDIRECT.toString())) {
                 redirect(page, response);
             } else if (page != null && page.startsWith(Page.FORWARD.toString())) {
@@ -68,14 +67,14 @@ public class LibraryServlet extends HttpServlet {
         String forwardPage = buildUrl(page);
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(forwardPage);
         dispatcher.forward(request, response);
-        Log.debug("Forward to: " + forwardPage);
+        Log.info("Forward to: " + forwardPage);
     }
 
     private void redirect(String page, HttpServletResponse response) throws IOException {
         String contextPath = getServletContext().getContextPath();
         String redirectPageUrl = contextPath + Page.CHANGE_PAGE + page.substring(Page.REDIRECT.toString().length());
         response.sendRedirect(redirectPageUrl);
-        Log.debug("Redirect to: " + redirectPageUrl);
+        Log.info("Redirect to: " + redirectPageUrl);
     }
 
     private String buildUrl(String page) {

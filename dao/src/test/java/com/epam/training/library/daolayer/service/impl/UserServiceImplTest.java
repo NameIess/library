@@ -1,5 +1,6 @@
 package com.epam.training.library.daolayer.service.impl;
 
+import com.epam.training.library.daolayer.connection.ConnectionManager;
 import com.epam.training.library.daolayer.dao.UserDao;
 import com.epam.training.library.daolayer.dao.exception.PersistException;
 import com.epam.training.library.daolayer.model.User;
@@ -21,6 +22,7 @@ import com.epam.training.library.daolayer.util.PasswordEncoder;
 import com.epam.training.library.daolayer.validator.UserSignInValidator;
 import com.epam.training.library.daolayer.validator.Verifiable;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +44,8 @@ public class UserServiceImplTest {
         passwordEncoder = Mockito.mock(PasswordEncoder.class);
         validator = new UserSignInValidator();
         underTest = new UserServiceImpl(userDao, passwordEncoder, validator);
+        ConnectionManager connectionManager = Mockito.mock(ConnectionManager.class);
+        Mockito.when(userDao.getConnectionManager()).thenReturn(connectionManager);
     }
 
     @Test
@@ -100,8 +104,8 @@ public class UserServiceImplTest {
 
     @Test
     public void shouldDeleteUserWhenUserValid() throws PersistException, ServiceException {
-        underTest.delete(ResourceData.userInstance);
-        Mockito.verify(userDao, Mockito.times(ResourceData.ONE_TIME)).delete(Mockito.any(User.class));
+        underTest.delete(ResourceData.ENTITY_ID_1);
+        Mockito.verify(userDao, Mockito.times(ResourceData.ONE_TIME)).delete(Mockito.anyLong());
     }
 
     @Test
@@ -130,8 +134,21 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void shouldUpdateUserWhenUserValid() throws PersistException, ServiceException, BusinessException {
+    public void shouldNotUpdateUserWhenUserWasNotChanged() throws PersistException, ServiceException {
+        Mockito.when(userDao.findOne(Mockito.anyLong())).thenReturn(ResourceData.userInstance);
         underTest.update(ResourceData.userInstance);
-        Mockito.verify(userDao, Mockito.times(ResourceData.ONE_TIME)).update(ResourceData.userInstance);
+        Mockito.verify(userDao, Mockito.times(ResourceData.ZERO_INTEGER_VALUE)).update(ResourceData.userInstance);
+        Assert.assertEquals(ResourceData.userInstance, ResourceData.userInstance);
+    }
+
+    @Test
+    public void shouldUpdateUserWhenUserWasChanged() throws PersistException, ServiceException {
+        User updatedUser = new User();
+        updatedUser.setId(ResourceData.ENTITY_ID_1);
+        updatedUser.setName(ResourceData.SAMPLE_STRING);
+        Mockito.when(userDao.findOne(Mockito.anyLong())).thenReturn(ResourceData.userInstance);
+        underTest.update(updatedUser);
+        Mockito.verify(userDao, Mockito.times(ResourceData.ONE_TIME)).update(updatedUser);
+        Assert.assertNotEquals(updatedUser, ResourceData.userInstance);
     }
 }

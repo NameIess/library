@@ -1,7 +1,7 @@
 package com.epam.training.library.viewlayer.filters;
 
-import com.epam.training.library.viewlayer.command.CommandEnum;
 import com.epam.training.library.daolayer.model.Role;
+import com.epam.training.library.viewlayer.command.CommandEnum;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,6 +36,8 @@ public class Interceptor {
         librarianAllowedActions.add(CommandEnum.BOOK_TRANSFER.toString());
 
         adminAllowedActions.addAll(librarianAllowedActions);
+        adminAllowedActions.add(CommandEnum.BOOK_PREPARE_EDIT.toString());
+        adminAllowedActions.add(CommandEnum.BOOK_EDIT.toString());
         adminAllowedActions.add(CommandEnum.USER_LIST.toString());
         adminAllowedActions.add(CommandEnum.USER_DELETE.toString());
         adminAllowedActions.add(CommandEnum.USER_PREPARE_EDIT.toString());

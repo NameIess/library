@@ -1,12 +1,12 @@
 package com.epam.training.library.daolayer.dao;
 
+import com.epam.training.library.daolayer.connection.ConnectionManager;
 import com.epam.training.library.daolayer.dao.exception.PersistException;
 import com.epam.training.library.daolayer.model.Book;
 import com.epam.training.library.daolayer.model.Receipt;
 import com.epam.training.library.daolayer.model.Status;
 import com.epam.training.library.daolayer.model.User;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -42,8 +42,8 @@ public class ReceiptDao extends AbstractDao<Receipt> {
             "INNER JOIN user AS u ON r.user_id = u.id " +
             "WHERE u.id = ?";
 
-    public ReceiptDao(Connection connection) {
-        super(connection);
+    public ReceiptDao(ConnectionManager connectionManager) {
+        super(connectionManager);
     }
 
     @Override
@@ -187,6 +187,39 @@ public class ReceiptDao extends AbstractDao<Receipt> {
         }
     }
 
+    public void updateStatusById(Receipt entity) throws PersistException {
+        if (entity == null) {
+            throw new PersistException("Error within ReceiptDao updateStatusById(): Null entity object received");
+        }
+
+        try (PreparedStatement statement = getConnectionManager().prepareStatement(UPDATE_STATUS_QUERY)) {
+            prepareStatementForUpdateStatusId(statement, entity);
+            int counter = statement.executeUpdate();
+            if (counter != SINGLE_ROW) {
+                throw new PersistException("Error within ReceiptDao updateStatusById(): Update query doesn't modify 1 record: " + counter + " records affected");
+            }
+        } catch (SQLException e) {
+            throw new PersistException("Error within ReceiptDao updateStatusById(): " + e.getMessage(), e);
+        }
+    }
+
+    public List<Receipt> findAllByUserId(Long entity) throws PersistException {
+        if (entity == null) {
+            throw new PersistException("Error within ReceiptDao findAllByUserId(): Null entity object received");
+        }
+
+        List<Receipt> receipts;
+
+        try (PreparedStatement statement = getConnectionManager().prepareStatement(FIND_ALL_BY_USER_ID_QUERY)){
+            prepareStatementForFindAllByUserId(statement, entity);
+            ResultSet resultSet = statement.executeQuery();
+            receipts = parseResultSet(resultSet);
+        } catch (SQLException e) {
+            throw new PersistException("Error within ReceiptDao findAllByUserId(): " + e.getMessage(), e);
+        }
+
+        return receipts;
+    }
 
     private void prepareStatementForUpdateStatusId(PreparedStatement statement, Receipt entity) throws PersistException {
         try {
@@ -201,47 +234,11 @@ public class ReceiptDao extends AbstractDao<Receipt> {
         }
     }
 
-    public void updateStatusById(Receipt entity) throws PersistException {
-        if (entity == null) {
-            throw new PersistException("Error within ReceiptDao updateStatusById(): Null entity object received");
-        }
-
-        Connection connection = getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(UPDATE_STATUS_QUERY)) {
-            prepareStatementForUpdateStatusId(statement, entity);
-            int counter = statement.executeUpdate();
-            if (counter != SINGLE_ROW) {
-                throw new PersistException("Error within ReceiptDao updateStatusById(): Update query doesn't modify 1 record: " + counter + " records affected");
-            }
-        } catch (SQLException e) {
-            throw new PersistException("Error within ReceiptDao updateStatusById(): " + e.getMessage(), e);
-        }
-    }
-    
     private void prepareStatementForFindAllByUserId(PreparedStatement statement, Long entity) throws PersistException {
         try {
             statement.setLong(1, entity);
-            
         } catch (SQLException e) {
             throw new PersistException("Error within ReceiptDao prepareStatementForFindAllByUserId(): " + e.getMessage(), e);
         }
-    }
-    
-    public List<Receipt> findAllByUserId(Long entity) throws PersistException {
-        if (entity == null) {
-            throw new PersistException("Error within ReceiptDao findAllByUserId(): Null entity object received");
-        }
-        
-        List<Receipt> receipts;
-        Connection connection = getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(FIND_ALL_BY_USER_ID_QUERY)){
-            prepareStatementForFindAllByUserId(statement, entity);
-            ResultSet resultSet = statement.executeQuery();
-            receipts = parseResultSet(resultSet);
-        } catch (SQLException e) {
-            throw new PersistException("Error within ReceiptDao findAllByUserId(): " + e.getMessage(), e);
-        }
-        
-        return receipts;
     }
 }

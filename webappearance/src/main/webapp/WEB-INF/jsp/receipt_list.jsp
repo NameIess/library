@@ -1,13 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ include file="locale/receipt_list.jspf" %>
-
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
 <t:wrapper title="${all_receipts}">
     <h2><span>${all_receipts}</span></h2>
-    <form name="receiptListForm" method="POST" action="${pageContext.request.contextPath}/libraryDispatcher">
+    <form name="receiptListForm" method="POST" action="${contextPath}/libraryDispatcher">
         <table class="table_countable wide_table">
             <thead>
             <tr>
@@ -18,6 +18,7 @@
                 <th>${email}</th>
                 <th>${book}</th>
                 <th>${order_quantity}</th>
+                <th>${order_number}</th>
                 <th>${rental_time}</th>
                 <th>${accept}</th>
                 <th>${reject}</th>
@@ -35,12 +36,13 @@
                     <td>${receipt.user.email}</td>
                     <td>${receipt.book.title}</td>
                     <td>${receipt.quantity}</td>
+                    <td>${receipt.id}</td>
                     <td>${receipt.term}</td>
                     <c:choose>
                         <c:when test="${receipt.status.id == 1}">
                             <td>
                                 <form class="confirmed" name="applyReceipt" method="POST"
-                                      action="${pageContext.request.contextPath}/libraryDispatcher">
+                                      action="${contextPath}/libraryDispatcher">
                                     <input type="hidden" name="command" value="book_transfer"/>
                                     <input type="hidden" name="id" value="${receipt.id}"/>
                                     <input type="hidden" name="status_id" value="2">
@@ -52,7 +54,7 @@
                             </td>
                             <td>
                                 <form class="confirmed" name="rejectReceipt" method="POST"
-                                      action="${pageContext.request.contextPath}/libraryDispatcher">
+                                      action="${contextPath}/libraryDispatcher">
                                     <input type="hidden" name="command" value="book_transfer"/>
                                     <input type="hidden" name="id" value="${receipt.id}"/>
                                     <input type="hidden" name="status_id" value="4">
@@ -71,7 +73,7 @@
                     <td>
                         <c:if test="${receipt.status.id == 2}">
                             <form class="confirmed" name="returnBook" method="POST"
-                                  action="${pageContext.request.contextPath}/libraryDispatcher">
+                                  action="${contextPath}/libraryDispatcher">
                                 <input type="hidden" name="command" value="book_transfer"/>
                                 <input type="hidden" name="id" value="${receipt.id}"/>
                                 <input type="hidden" name="status_id" value="3">
@@ -84,7 +86,7 @@
                     </td>
                     <td>
                         <form class="confirmed" name="deleteReceipt" method="POST"
-                              action="${pageContext.request.contextPath}/libraryDispatcher">
+                              action="${contextPath}/libraryDispatcher">
                             <input type="hidden" name="command" value="receipt_delete"/>
                             <input type="hidden" name="id" value="${receipt.id}"/>
                             <input class="submit_button small_button delete_button" type="submit" value="${delete}"/>

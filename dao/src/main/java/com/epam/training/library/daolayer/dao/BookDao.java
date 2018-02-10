@@ -1,9 +1,9 @@
 package com.epam.training.library.daolayer.dao;
 
+import com.epam.training.library.daolayer.connection.ConnectionManager;
 import com.epam.training.library.daolayer.dao.exception.PersistException;
 import com.epam.training.library.daolayer.model.Book;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,8 +20,8 @@ public class BookDao extends AbstractDao<Book> {
     private static final int SINGLE_ROW = 1;
 
 
-    public BookDao(Connection connection) {
-        super(connection);
+    public BookDao(ConnectionManager connectionManager) {
+        super(connectionManager);
     }
 
     @Override
@@ -143,8 +143,8 @@ public class BookDao extends AbstractDao<Book> {
         if (entity == null) {
             throw new PersistException("Error within BookDao updateAmountById(): Null entity object received");
         }
-        Connection connection = getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(UPDATE_AMOUNT_BY_ID_QUERY)){
+
+        try (PreparedStatement statement = getConnectionManager().prepareStatement(UPDATE_AMOUNT_BY_ID_QUERY)){
             prepareStatementForUpdateAmountById(statement, entity);
             int counter = statement.executeUpdate();
             if (counter != SINGLE_ROW) {

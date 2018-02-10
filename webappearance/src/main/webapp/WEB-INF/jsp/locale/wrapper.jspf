@@ -9,4 +9,4 @@
 <fmt:message bundle="${loc}" key="local.registration" var="registration"/>
 <fmt:message bundle="${loc}" key="local.logout" var="logout"/>
 <fmt:message bundle="${loc}" key="local.footer.text" var="footer"/>
-<fmt:message bundle="${loc}" key="locale.language" var="language"/>
+<fmt:message bundle="${loc}" key="local.language" var="language"/>

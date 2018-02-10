@@ -2,7 +2,6 @@
 <fmt:setBundle basename="local" var="loc"/>
 <fmt:message bundle="${loc}" key="local.report" var="report"/>
 
-
 <c:set var="success_message_key" value="${successMessage}"/>
 <c:if test="${not empty success_message_key}">
     <fmt:message bundle="${loc}" key="${success_message_key}" var="success_message"/>

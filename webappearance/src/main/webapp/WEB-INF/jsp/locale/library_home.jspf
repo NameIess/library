@@ -7,3 +7,4 @@
 <fmt:message bundle="${loc}" key="local.in_stock" var="amount"/>
 <fmt:message bundle="${loc}" key="local.number_of_pages" var="number_of_pages"/>
 <fmt:message bundle="${loc}" key="local.more_info" var="more"/>
+<fmt:message bundle="${loc}" key="local.edit" var="edit"/>

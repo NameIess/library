@@ -1,0 +1,21 @@
+<fmt:setLocale value="${sessionScope.locale}"/>
+<fmt:setBundle basename="local" var="loc"/>
+<fmt:message bundle="${loc}" key="local.registration" var="registration"/>
+<fmt:message bundle="${loc}" key="local.title" var="title"/>
+<fmt:message bundle="${loc}" key="local.author" var="author"/>
+<fmt:message bundle="${loc}" key="local.year_of_publishing" var="year_of_publishing"/>
+<fmt:message bundle="${loc}" key="local.number_of_pages" var="number_of_pages"/>
+<fmt:message bundle="${loc}" key="local.description" var="description"/>
+<fmt:message bundle="${loc}" key="local.in_stock" var="in_stock"/>
+<fmt:message bundle="${loc}" key="local.submit" var="submit"/>
+<fmt:message bundle="${loc}" key="local.done" var="done"/>
+<fmt:message bundle="${loc}" key="local.this_field_is_required" var="required_field"/>
+<fmt:message bundle="${loc}" key="local.numbers_amount" var="wrong_number_amount"/>
+<fmt:message bundle="${loc}" key="local.field_max_length_150" var="wrong_field_150_length"/>
+<fmt:message bundle="${loc}" key="local.field_max_length_1500" var="wrong_field_1500_length"/>
+
+<input id="general_success_message" type="hidden" value="${done}">
+<input id="required_field_message" type="hidden" value="${required_field}">
+<input id="wrong_number_amount_message" type="hidden" value="${wrong_number_amount}">
+<input id="wrong_field_150_length_message" type="hidden" value="${wrong_field_150_length}">
+<input id="wrong_field_1500_length_message" type="hidden" value="${wrong_field_1500_length}">

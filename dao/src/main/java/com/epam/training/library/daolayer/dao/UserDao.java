@@ -1,10 +1,10 @@
 package com.epam.training.library.daolayer.dao;
 
+import com.epam.training.library.daolayer.connection.ConnectionManager;
 import com.epam.training.library.daolayer.dao.exception.PersistException;
 import com.epam.training.library.daolayer.model.Role;
 import com.epam.training.library.daolayer.model.User;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,12 +24,12 @@ public class UserDao extends AbstractDao<User> {
     private static final String FIND_ONE_QUERY = "SELECT u.id, u.role_id, r.name AS 'rolename', u.employee_number, u.name, u.second_name, u.surname, u.email, u.phone_number, u.passport_series, u.passport_number, u.password FROM user AS u INNER JOIN role AS r ON u.role_id = r.id WHERE u.id = ?";
     private static final String FIND_ALL_QUERY = "SELECT u.id, u.role_id, r.name AS 'rolename', u.employee_number, u.name, u.second_name, u.surname, u.email, u.phone_number, u.passport_series, u.passport_number, u.password FROM user AS u INNER JOIN role AS r ON u.role_id = r.id";
     private static final String INSERT_QUERY = "INSERT INTO user (id, role_id, employee_number, name, second_name, surname, email, phone_number, passport_series, passport_number, password) VALUES (DEFAULT, DEFAULT, DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String UPDATE_QUERY = "UPDATE user SET role_id = ?, employee_number = ?, name = ?, second_name = ?, surname = ?, phone_number = ?, passport_series = ?, passport_number = ? WHERE id = ?";
+    private static final String UPDATE_QUERY = "UPDATE user SET role_id = ?, employee_number = ?, name = ?, second_name = ?, surname = ?, email = ?, phone_number = ?, passport_series = ?, passport_number = ?, password = ? WHERE id = ?";
     private static final String DELETE_QUERY = "DELETE FROM user WHERE id = ?";
 
 
-    public UserDao(Connection connection) {
-        super(connection);
+    public UserDao(ConnectionManager connectionManager) {
+        super(connectionManager);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class UserDao extends AbstractDao<User> {
                 userList.add(user);
             }
         } catch (SQLException e) {
-            throw new PersistException("Trouble in UserDao within parseResultSet", e);
+            throw new PersistException("Trouble in UserDao within parseResultSet: " + e.getMessage(), e);
         }
         return userList;
     }
@@ -139,7 +139,6 @@ public class UserDao extends AbstractDao<User> {
 
         } catch (SQLException e) {
             throw new PersistException("Trouble in UserDao within prepareStatementForInsert: " + e.getMessage(), e);
-
         }
     }
 
@@ -162,20 +161,26 @@ public class UserDao extends AbstractDao<User> {
             String surname = entity.getSurname();
             statement.setString(5, surname);
 
+            String email = entity.getEmail();
+            statement.setString(6, email);
+
             String phoneNumber = entity.getPhoneNumber();
-            statement.setString(6, phoneNumber);
+            statement.setString(7, phoneNumber);
 
             String passportSeries = entity.getPassportSeries();
-            statement.setString(7, passportSeries);
+            statement.setString(8, passportSeries);
 
             String passportNumber = entity.getPassportNumber();
-            statement.setString(8, passportNumber);
+            statement.setString(9, passportNumber);
+
+            String password = entity.getPassword();
+            statement.setString(10, password);
 
             Long id = entity.getId();
-            statement.setLong(9, id);
+            statement.setLong(11, id);
 
         } catch (SQLException e) {
-            throw new PersistException("Trouble in UserDao within prepareStatementForInsert", e);
+            throw new PersistException("Trouble in UserDao within prepareStatementForInsert: " + e.getMessage(), e);
 
         }
     }
@@ -186,12 +191,11 @@ public class UserDao extends AbstractDao<User> {
         }
 
         List<User> result;
-        Connection connection = getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(FIND_ONE_BY_EMAIL_PASS)) {
+
+        try (PreparedStatement statement = getConnectionManager().prepareStatement(FIND_ONE_BY_EMAIL_PASS)) {
             prepareStatementForFindOneByMailPass(statement, entity);
             ResultSet resultSet = statement.executeQuery();
             result = parseResultSet(resultSet);
-
         } catch (SQLException e) {
             throw new PersistException("Error within UserDao findOneByMailPass(): " + e.getMessage(), e);
         }
@@ -201,26 +205,10 @@ public class UserDao extends AbstractDao<User> {
         }
 
         if (result.size() > SINGLE_ROW) {
-            throw new PersistException("Error within UserDao findOneByMailPass(): More than one record has been received");
+            throw new PersistException("Error within UserDao findOneByMailPass(): More than one record has been received. Current records amount: " + result.size());
         }
-
 
         return result.iterator().next();
-    }
-
-
-
-    private void prepareStatementForFindOneByMailPass(PreparedStatement statement, User entity) throws PersistException {
-        try {
-            String email = entity.getEmail();
-            statement.setString(1, email);
-
-            String password = entity.getPassword();
-            statement.setString(2, password);
-
-        } catch (SQLException e) {
-            throw new PersistException("Error within UserDao prepareStatementForFindOneByMailPass(): " + e.getMessage(), e);
-        }
     }
 
     public User findOneByMail(User entity) throws PersistException {
@@ -229,8 +217,7 @@ public class UserDao extends AbstractDao<User> {
         }
 
         List<User> result;
-        Connection connection = getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(FIND_ONE_BY_EMAIL)) {
+        try (PreparedStatement statement = getConnectionManager().prepareStatement(FIND_ONE_BY_EMAIL)) {
             prepareStatementForFindOneByMail(statement, entity);
             ResultSet resultSet = statement.executeQuery();
             result = parseResultSet(resultSet);
@@ -244,13 +231,24 @@ public class UserDao extends AbstractDao<User> {
         }
 
         if (result.size() > SINGLE_ROW) {
-            throw new PersistException("Error within UserDao findOneByMail(): More than one record has been received");
+            throw new PersistException("Error within UserDao findOneByMail(): More than one record has been received. Current records amount: " + result.size());
         }
 
         return result.iterator().next();
     }
 
+    private void prepareStatementForFindOneByMailPass(PreparedStatement statement, User entity) throws PersistException {
+        try {
+            String email = entity.getEmail();
+            statement.setString(1, email);
 
+            String password = entity.getPassword();
+            statement.setString(2, password);
+
+        } catch (SQLException e) {
+            throw new PersistException("Error within UserDao prepareStatementForFindOneByMailPass(): " + e.getMessage(), e);
+        }
+    }
 
     private void prepareStatementForFindOneByMail(PreparedStatement statement, User entity) throws PersistException {
         try {

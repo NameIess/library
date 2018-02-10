@@ -1,12 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ include file="locale/user_receipt.jspf" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
 <t:wrapper title="${my_books}">
     <h2><span>${my_books}</span></h2>
-    <form name="userListForm" method="POST" action="${pageContext.request.contextPath}/libraryDispatcher">
+    <form name="userListForm" method="POST" action="${contextPath}/libraryDispatcher">
         <table class="table_countable">
             <thead>
             <tr>
@@ -16,6 +17,7 @@
                 <th>${year_of_publishing}</th>
                 <th>${number_of_pages}</th>
                 <th>${order_quantity}</th>
+                <th>${order_number}</th>
                 <th>${order_status}</th>
                 <th>${rental_time}</th>
                 <th>${return_book}</th>
@@ -30,12 +32,13 @@
                     <td>${receipt.book.yearOfPublishing}</td>
                     <td>${receipt.book.numberOfPages}</td>
                     <td>${receipt.quantity}</td>
+                    <td>${receipt.id}</td>
                     <td>${receipt.status.name}</td>
                     <td>${receipt.term}</td>
                     <td>
                         <c:if test="${receipt.status.id == 1}">
                             <form name="deleteReceipt" method="POST"
-                                  action="${pageContext.request.contextPath}/libraryDispatcher">
+                                  action="${contextPath}/libraryDispatcher">
                                 <input type="hidden" name="command" value="receipt_delete"/>
                                 <input type="hidden" name="id" value="${receipt.id}"/>
                                 <input class="submit_button" type="submit" value="${delete_request}"/>

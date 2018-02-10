@@ -2,6 +2,9 @@ package com.epam.training.library.daolayer.service.exception;
 
 import java.io.Serializable;
 
+/**
+ * General exception based on business logic.
+ */
 public class BusinessException extends Exception implements Serializable {
 
     public BusinessException() {

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Book registration test</title>
+    <link rel="stylesheet" href="//code.jquery.com/qunit/qunit-1.14.0.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.min.js"></script>
+    <script src="//code.jquery.com/qunit/qunit-1.14.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-mockjax/1.6.2/jquery.mockjax.min.js"></script>
+
+    <script type="text/javascript" src="resources/user_validator.js"></script>
+    <script type="text/javascript" src="book_registration_validation_test.js"></script>
+</head>
+
+<body>
+
+<h1 id="qunit-header">Book Registration Test Suite</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+
+<h2 id="qunit-userAgent"></h2>
+
+<ol id="qunit-tests"></ol>
+
+<div id="qunit-dom-testing" style="display: none">
+
+    <form class="validated_form" name="book_registration_form">
+
+        <div class="registration_group">
+            <p>${title}</p>
+            <input type="text" class="verifiable book_data" name="title" title="${title}"
+                   value="${requestScope.edit_book.title}" id="title" placeholder="${title}" autofocus>
+            <strong class="message"></strong>
+        </div>
+        <div class="registration_group">
+            <p>${author}</p>
+            <input type="text" class="verifiable book_data" name="author" title="${author}"
+                   value="${requestScope.edit_book.author}" id="author" placeholder="${author}">
+            <strong class="message"></strong>
+        </div>
+        <div class="registration_group">
+            <p>${year_of_publishing}</p>
+            <input type="text" class="verifiable book_number" name="year_of_publishing" title="${year_of_publishing}"
+                   value="${requestScope.edit_book.yearOfPublishing}" id="year_of_publishing"
+                   placeholder="${year_of_publishing}">
+            <strong class="message"></strong>
+        </div>
+        <div class="registration_group">
+            <p>${number_of_pages}</p>
+            <input type="text" class="verifiable book_number" name="number_of_pages" title="${number_of_pages}"
+                   value="${requestScope.edit_book.numberOfPages}" id="number_of_pages"
+                   placeholder="${number_of_pages}">
+            <strong class="message"></strong>
+        </div>
+        <div class="registration_group">
+            <p>${in_stock}</p>
+            <input type="text" class="verifiable book_number" name="amount" title="${in_stock}"
+                   value="${requestScope.edit_book.amount}" id="amount" placeholder="${in_stock}">
+            <strong class="message"></strong>
+        </div>
+        <div class="registration_group">
+            <p>${description}</p>
+            <textarea type="text" class="verifiable" name="description" title="${description}" id="description"
+                      placeholder="${description}">${requestScope.edit_book.description}</textarea>
+            <strong class="message"></strong>
+        </div>
+
+        <input class="submit_button" type="submit" title="${submit}" value="${submit}">
+    </form>
+
+</div>
+</body>
+</html>

@@ -19,58 +19,47 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void save(Book book) throws ServiceException {
-        try {
-            bookDao.startTransaction();
-            bookDao.create(book);
-            bookDao.commit();
-
-            Log.info("Book " + book + " has been saved to DB");
-        } catch (PersistException e) {
-            bookDao.rollback();
-            throw new ServiceException("Error within BookServiceImpl save(): " + e.getMessage(), e);
-        } finally {
-            bookDao.releaseConnection();
-        }
-    }
-
-    @Override
-    public void delete(Book book) throws ServiceException {
-        try {
-            bookDao.delete(book);
-            Log.info("Book " + book + " has been removed from DB");
-        } catch (PersistException e) {
-            throw new ServiceException("Error within BookServiceImpl delete(): " + e.getMessage(), e);
-        } finally {
-            bookDao.releaseConnection();
-        }
-    }
-
-    @Override
     public Book findOneById(Long id) throws ServiceException {
-        Book book;
         try {
-            book = bookDao.findOne(id);
+            Book book = bookDao.findOne(id);
+            Log.info("Book " + book + " has been received from DB by ID - " + id);
+            return book;
         } catch (PersistException e) {
             throw new ServiceException("Error within BookServiceImpl findOneById(): " + e.getMessage(), e);
         } finally {
-            bookDao.releaseConnection();
+            bookDao.getConnectionManager().releaseConnection();
         }
-        Log.info("Book " + book + " has been received from DB by ID - " + id);
-        return book;
     }
 
     @Override
     public List<Book> findAll() throws ServiceException {
-        List<Book> bookList;
         try {
-            bookList = bookDao.findAll();
+            List<Book> bookList = bookDao.findAll();
+            Log.info("Books " + bookList + " have been received from DB");
+            return bookList;
         } catch (PersistException e) {
             throw new ServiceException("Error within BookServiceImpl findAll(): " + e.getMessage(), e);
         } finally {
-            bookDao.releaseConnection();
+            bookDao.getConnectionManager().releaseConnection();
         }
-        Log.info("Books " + bookList + " have been received from DB");
-        return bookList;
+    }
+
+    @Override
+    public void update(Book updatableBook) throws ServiceException {
+        try {
+            Long updatedBookId = updatableBook.getId();
+            Book bookBeforeUpdate = bookDao.findOne(updatedBookId);
+            if (!bookBeforeUpdate.equals(updatableBook)) {
+                bookDao.getConnectionManager().startTransaction();
+                bookDao.update(updatableBook);
+                bookDao.getConnectionManager().commitTransaction();
+                Log.info("Book has been updated to state: " + updatableBook);
+            }
+        } catch (PersistException e) {
+            bookDao.getConnectionManager().rollbackTransaction();
+            throw new ServiceException("Error within BookService update(): " + e.getMessage(), e);
+        } finally {
+            bookDao.getConnectionManager().releaseConnection();
+        }
     }
 }

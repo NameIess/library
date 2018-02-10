@@ -9,6 +9,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
@@ -16,15 +17,15 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class DbConnectionPool {
     private static final Logger Log = LogManager.getLogger(DbConnectionPool.class.getSimpleName());
-    private static AtomicBoolean isInitialized = new AtomicBoolean(false);
+    private static final AtomicBoolean IS_INITIALIZED = new AtomicBoolean(false);
     private static Lock lock = new ReentrantLock();
     private static DbConnectionPool instance;
-    private List<Connection> availableConnections = new ArrayList<>();
-    private String url;
-    private String username;
-    private String password;
-    private int maxConnectionAmount;
-    private String driver;
+    private final String url;
+    private final String username;
+    private final String password;
+    private final int maxConnectionAmount;
+    private final String driver;
+    private List<Connection> availableConnection;
 
     private DbConnectionPool(String url, String username, String password, int maxConnectionAmount, String driver) {
         this.url = url;
@@ -32,17 +33,17 @@ public class DbConnectionPool {
         this.password = password;
         this.maxConnectionAmount = maxConnectionAmount;
         this.driver = driver;
-
-        loadDrivers();
+        this.availableConnection = new ArrayList<>();
     }
 
     public static void createInstance(String url, String username, String password, int maxConnectionAmount, String driver) {
-        if (!isInitialized.get()) {
+        if (!IS_INITIALIZED.get()) {
             lock.lock();
             try {
                 if (instance == null) {
                     instance = new DbConnectionPool(url, username, password, maxConnectionAmount, driver);
-                    isInitialized.set(true);
+                    instance.loadDriver();
+                    IS_INITIALIZED.set(true);
                     Log.info("Connection pool has been created.");
                 }
             } finally {
@@ -51,24 +52,18 @@ public class DbConnectionPool {
         }
     }
 
+    public static void releasePoolAndConnections() {
+        if (IS_INITIALIZED.get()) {
+            instance.closePoolConnections();
+        }
+    }
+
     public static DbConnectionPool getInstance() {
         lock.lock();
         try {
             return instance;
-
         } finally {
             lock.unlock();
-        }
-    }
-
-    private void loadDrivers() {
-        try {
-            Driver connectionDriver = (Driver) Class.forName(driver).newInstance();
-            DriverManager.registerDriver(connectionDriver);
-
-            Log.info("A JDBC driver has been registered");
-        } catch (Exception e) {
-            throw new DbConnectionPoolException("Can't register JDBC driver. " + e.getMessage(), e);
         }
     }
 
@@ -76,22 +71,14 @@ public class DbConnectionPool {
         lock.lock();
         try {
             Connection connection;
-            int connectionsAmount = availableConnections.size();
-            if (!availableConnections.isEmpty()) {
-                connection = availableConnections.get(connectionsAmount - 1);
-                availableConnections.remove(connection);
-
-                try {
-                    if (connection.isClosed()) {
-                        connection = getConnection();
-                    }
-                } catch (SQLException e) {
-                    throw new DbConnectionPoolException("Error while receiving com.epam.training.library.daolayer.connection. " + e.getMessage(), e);
-                }
+            Iterator<Connection> connectionIterator = availableConnection.iterator();
+            if (connectionIterator.hasNext()) {
+                connection = connectionIterator.next();
+                connectionIterator.remove();
+                Log.info("Connection " + connection + " has been received from pool.");
             } else {
                 connection = createConnection();
             }
-            Log.info("Connection " + connection + " has been received.");
 
             return connection;
         } finally {
@@ -99,48 +86,75 @@ public class DbConnectionPool {
         }
     }
 
-    private Connection createConnection() {
-        Connection connection;
-        try {
-            if (username == null) {
-                connection = DriverManager.getConnection(url);
-            } else {
-                connection = DriverManager.getConnection(url, username, password);
-            }
-
-        } catch (SQLException e) {
-            Log.error("Can not create com.epam.training.library.daolayer.connection. Wrong authentication data.");
-            throw new DbConnectionPoolException("Error while creating com.epam.training.library.daolayer.connection. " + e.getMessage(), e);
-        }
-
-        return connection;
-    }
-
     public void releaseConnection(Connection connection) {
         lock.lock();
+        if (connection == null) {
+            throw new DbConnectionPoolException("Error while closing the connection. Can't close the connection for pool: connection equal null.");
+        }
         try {
-            int connectionsAmount = availableConnections.size();
-            if (connection != null && connectionsAmount <= maxConnectionAmount) {
-                availableConnections.add(connection);
-                Log.info("A com.epam.training.library.daolayer.connection" + connection + " has been released back to pool.");
+            int connectionsAmount = availableConnection.size();
+            if (connectionsAmount < maxConnectionAmount) {
+                availableConnection.add(connection);
+                Log.info("A connection" + connection + " has been released back to pool. Current Pool size: = " + availableConnection.size());
+            } else {
+                connection.close();
+                Log.info("A connection has been closed. Current Pool size: = " + availableConnection.size());
             }
+        } catch (SQLException e) {
+            throw new DbConnectionPoolException("Error while closing the connection. Can't close the connection for pool. " + e.getMessage(), e);
         } finally {
             lock.unlock();
         }
     }
 
-    public void releasePool() {
+    private Connection createConnection() {
         lock.lock();
         try {
-            for (Connection connection : availableConnections) {
+            Connection connection;
+            try {
+                if (username == null) {
+                    connection = DriverManager.getConnection(url);
+                } else {
+                    connection = DriverManager.getConnection(url, username, password);
+                }
+            } catch (SQLException e) {
+                throw new DbConnectionPoolException("Error while creating connection. " + e.getMessage(), e);
+            }
+            Log.debug("Connection has been created: " + connection);
+            return connection;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private void loadDriver() {
+        lock.lock();
+        try {
+            Driver connectionDriver = (Driver) Class.forName(driver).newInstance();
+            DriverManager.registerDriver(connectionDriver);
+
+            Log.info("A JDBC driver has been registered");
+        } catch (Exception e) {
+            throw new DbConnectionPoolException("Can't register the JDBC driver. " + e.getMessage(), e);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    private void closePoolConnections() {
+        lock.lock();
+        try {
+            Iterator<Connection> connectionIterator = availableConnection.iterator();
+            while (connectionIterator.hasNext()) {
                 try {
+                    Connection connection = connectionIterator.next();
                     connection.close();
+                    connectionIterator.remove();
                 } catch (SQLException e) {
-                    throw new DbConnectionPoolException("Error while closing com.epam.training.library.daolayer.connection. Can't close com.epam.training.library.daolayer.connection for pool. " + e.getMessage(), e);
+                    throw new DbConnectionPoolException("Error while closing the connection. Can't close the connection for pool. " + e.getMessage(), e);
                 }
             }
-            availableConnections.clear();
-            Log.info("All connections has been closed.");
+            Log.info("All connections have been closed. Current Pool size: = " + availableConnection.size());
         } finally {
             lock.unlock();
         }

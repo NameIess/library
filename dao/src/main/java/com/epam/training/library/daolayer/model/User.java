@@ -130,6 +130,7 @@ public class User implements Identified, Serializable {
         sb.append(", passportSeries='").append(passportSeries).append('\'');
         sb.append(", passportNumber='").append(passportNumber).append('\'');
         sb.append(", password='").append(password).append('\'');
+        sb.append(", role='").append(role).append('\'');
         sb.append('}');
         return sb.toString();
     }

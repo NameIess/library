@@ -1,5 +1,6 @@
 package com.epam.training.library.daolayer.service.impl;
 
+import com.epam.training.library.daolayer.connection.ConnectionManager;
 import com.epam.training.library.daolayer.dao.BookDao;
 import com.epam.training.library.daolayer.dao.ReceiptDao;
 import com.epam.training.library.daolayer.dao.exception.PersistException;
@@ -37,6 +38,9 @@ public class ReceiptServiceImplTest {
         bookDao = Mockito.mock(BookDao.class);
         receiptDao = Mockito.mock(ReceiptDao.class);
         underTest = new ReceiptServiceImpl(receiptDao, bookDao);
+        ConnectionManager connectionManager = Mockito.mock(ConnectionManager.class);
+        Mockito.when(bookDao.getConnectionManager()).thenReturn(connectionManager);
+        Mockito.when(receiptDao.getConnectionManager()).thenReturn(connectionManager);
     }
 
     @Test(expected = BusinessException.class)
@@ -56,26 +60,8 @@ public class ReceiptServiceImplTest {
 
     @Test
     public void shouldDeleteReceiptWhenReceiptValid() throws PersistException, ServiceException {
-        underTest.delete(ResourceData.receiptInstance);
-        Mockito.verify(receiptDao, Mockito.times(ResourceData.ONE_TIME)).delete(Mockito.any(Receipt.class));
-    }
-
-    @Test
-    public void shouldReturnOneReceiptWhenReceiptIdValid() throws PersistException, ServiceException {
-        Mockito.when(receiptDao.findOne(Mockito.anyLong())).thenReturn(ResourceData.receiptInstance);
-        Receipt actualReceipt = underTest.findOneById(ResourceData.ENTITY_ID_1);
-        Mockito.verify(receiptDao, Mockito.times(ResourceData.ONE_TIME)).findOne(Mockito.anyLong());
-        Long actualBookId = actualReceipt.getId();
-        Long expectedBookId = ResourceData.receiptInstance.getId();
-
-        Assert.assertEquals(actualBookId, expectedBookId);
-        Assert.assertEquals(actualReceipt, ResourceData.receiptInstance);
-    }
-
-    @Test(expected = ServiceException.class)
-    public void shoulThrowServiceExceptionWhenReceiptInvalid() throws PersistException, ServiceException {
-        Mockito.when(receiptDao.findOne(Mockito.anyLong())).thenThrow(PersistException.class);
-        underTest.findOneById(ResourceData.ENTITY_ID_1);
+        underTest.delete(ResourceData.ENTITY_ID_1);
+        Mockito.verify(receiptDao, Mockito.times(ResourceData.ONE_TIME)).delete(Mockito.anyLong());
     }
 
     @Test
@@ -97,7 +83,7 @@ public class ReceiptServiceImplTest {
     public void shouldReturnReceiptListByUserWhenUserValid() throws PersistException, ServiceException {
         List<Receipt> expectedList = Arrays.asList(new Receipt(), new Receipt());
         Mockito.doReturn(expectedList).when(receiptDao).findAllByUserId(ResourceData.ENTITY_ID_1);
-        List<Receipt> actualList = underTest.findAllByUserId(ResourceData.userInstance);
+        List<Receipt> actualList = underTest.findAllByUserId(ResourceData.ENTITY_ID_1);
 
         Assert.assertTrue(!actualList.isEmpty() && !expectedList.isEmpty());
         Assert.assertTrue(actualList.size() == expectedList.size());
@@ -107,7 +93,7 @@ public class ReceiptServiceImplTest {
     @Test(expected = ServiceException.class)
     public void shoulThrowServiceExceptionWhenUserInvalid() throws PersistException, ServiceException {
         Mockito.when(receiptDao.findAllByUserId(Mockito.anyLong())).thenThrow(PersistException.class);
-        underTest.findAllByUserId(ResourceData.userInstance);
+        underTest.findAllByUserId(ResourceData.ENTITY_ID_1);
     }
 
     @Test

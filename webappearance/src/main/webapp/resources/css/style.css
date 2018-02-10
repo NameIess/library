@@ -81,7 +81,6 @@ nav ul li a:hover, header ul li.selected a {
 nav ul li form {
 	display: inline-block;
 }
-
 select {
 	background: #fff;
 	color: #000;
@@ -92,12 +91,9 @@ select {
     -webkit-appearance: none;
     -moz-appearance: none;
 }
-
 .menu_list {
 	display: inline-block;
-
 }
-
 header h1 {
 	color: #000;
 	display: inline;
@@ -113,10 +109,14 @@ header h1 span {
 	display: inline-block;
 	padding: 15px 28px 12px;
 }
-
-
 .container .registration_group {
 	margin-bottom: 30px;
+}
+.registration_group p {
+	text-transform: uppercase;
+	font-weight: normal;
+	font-size: 15px;
+	padding: 5px 0 3px 0;
 }
 body h2 {
 	color: #fff;
@@ -155,6 +155,14 @@ body h2 span {
 	padding: 20px 10px;
 	text-align: center;
 	width: 596px;
+}
+.container form textarea {
+	height: 175px;
+	overflow: auto;
+	resize: none;
+}
+textarea::placeholder {
+	text-transform: uppercase;
 }
 input::placeholder {
 	text-transform: uppercase;
@@ -219,7 +227,6 @@ input::placeholder {
 .container table.wide_table {
 	margin: 0 0 0 -310px;
 }
-
 td {
 	vertical-align: middle;
 	child-align: middle;
@@ -234,9 +241,7 @@ th {
 	font-family: "Arial Black", Gadget, sans-serif;
 
 }
-
 tr:hover {background-color: #f9f9f9;}
-
 .container form table, th, td {
 	border: 1px solid #252525;
 	padding: 5px;
@@ -340,7 +345,6 @@ footer article ul li #googleplus:hover {
 	text-align: center;
 	margin: 0 0 0 1px;
 }
-
 .select::after {
 	content: "\25BC";
 	color: #fff8dc;
@@ -365,11 +369,9 @@ footer article ul li #googleplus:hover {
 	left: 591px;
 	cursor: pointer;
 }
-
 #time_pick, .clear {
 	display: none;
 }
-
 [type="checkbox"]:not(:checked),
 [type="checkbox"]:checked {
 	position: absolute;

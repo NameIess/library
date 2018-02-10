@@ -2,6 +2,9 @@ package com.epam.training.library.viewlayer.command.exception;
 
 import java.io.Serializable;
 
+/**
+ *
+ */
 public class ActionException extends Exception implements Serializable {
 
     public ActionException() {

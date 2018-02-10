@@ -14,6 +14,7 @@ public enum Message {
     BOOK_TRANSFERRED_SUCCESSFULLY("local.transferred_successfully"),
     ACCOUNT_CREATED_SUCCESSFULLY("local.registered_successfully"),
     ACCOUNT_UPDATED_SUCCESSFULLY("local.user_updated_successfully"),
+    BOOK_UPDATED_SUCCESSFULLY("local.book_updated_successfully"),
     AUTHENTICATED_SUCCESSFULLY("local.sign_in_successfully");
 
     private String message;

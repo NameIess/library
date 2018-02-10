@@ -1,10 +1,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@attribute name="title" required="true" %>
-<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<%@ attribute name="title" required="true" %>
 <%@ include file="../jsp/locale/wrapper.jspf" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:set var="admin_role" value="1" />
 <c:set var="librarian_role" value="2" />
+
 <!doctype html>
 <html>
 <head>
@@ -21,21 +22,21 @@
     <nav id="navmenu">
         <ul id="navigation" class="menu_list">
             <li>
-                <a href="${pageContext.request.contextPath}/libraryDispatcher?command=library_home">${library}</a>
+                <a href="${contextPath}/libraryDispatcher?command=library_home">${library}</a>
             </li>
             <c:if test="${sessionScope.user != null}">
                 <li>
-                    <a href="${pageContext.request.contextPath}/libraryDispatcher?command=user_receipt">${my_books}</a>
+                    <a href="${contextPath}/libraryDispatcher?command=user_receipt">${my_books}</a>
                 </li>
             </c:if>
-            <c:if test="${sessionScope.user.role.id == admin_role}">
+            <c:if test="${sessionScope.user.roleId == admin_role}">
                 <li>
-                    <a href="${pageContext.request.contextPath}/libraryDispatcher?command=user_list">${users}</a>
+                    <a href="${contextPath}/libraryDispatcher?command=user_list">${users}</a>
                 </li>
             </c:if>
-            <c:if test="${sessionScope.user.role.id <= librarian_role}">
+            <c:if test="${sessionScope.user.roleId <= librarian_role}">
                 <li>
-                    <a href="${pageContext.request.contextPath}/libraryDispatcher?command=receipt_list">${receipts}</a>
+                    <a href="${contextPath}/libraryDispatcher?command=receipt_list">${receipts}</a>
                 </li>
             </c:if>
         </ul>
@@ -59,10 +60,10 @@
             </c:if>
             <c:if test="${sessionScope.user == null}">
                 <li>
-                    <a href="${pageContext.request.contextPath}/libraryDispatcher?command=show_page&redirect=user_sign_in">${sign_in}</a>
+                    <a href="${contextPath}/libraryDispatcher?command=show_page&redirect=user_sign_in">${sign_in}</a>
                 </li>
                 <li>
-                    <a href="${pageContext.request.contextPath}/libraryDispatcher?command=show_page&redirect=user_registration">${registration}</a>
+                    <a href="${contextPath}/libraryDispatcher?command=show_page&redirect=user_registration">${registration}</a>
                 </li>
             </c:if>
         </ul>
@@ -71,7 +72,6 @@
 </header>
 <main id="main_content" class="container">
     <jsp:doBody/>
-    <%--<div class="foot_up"></div>--%>
 </main>
 <footer id="footer">
     <article>

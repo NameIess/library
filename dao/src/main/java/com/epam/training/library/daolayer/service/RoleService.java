@@ -5,12 +5,19 @@ import com.epam.training.library.daolayer.service.exception.ServiceException;
 
 import java.util.List;
 
-public interface RoleService {
+/**
+ * Contains the basic operations interaction with the roles.
+ */
+public interface RoleService extends Service {
+
+    /**
+     * Returns a list of the all user roles
+     *
+     * @return a list of the all user roles
+     *
+     * @throws ServiceException when data access occurs
+     */
     List<Role> findAll() throws ServiceException;
 
     Role findOneById(Long id) throws ServiceException;
-
-    void update(Role role) throws ServiceException;
-
-    void delete(Role role) throws ServiceException;
 }

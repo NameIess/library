@@ -1,5 +1,6 @@
 package com.epam.training.library.viewlayer.command;
 
+import com.epam.training.library.daolayer.model.dto.impl.UserDto;
 import com.epam.training.library.viewlayer.command.exception.ActionException;
 import com.epam.training.library.daolayer.model.Book;
 import com.epam.training.library.daolayer.model.Receipt;
@@ -43,7 +44,10 @@ public class BookOrderCommand extends AbstractActionCommand {
         book.setId(id);
         receipt.setBook(book);
 
-        User user = RequestManager.getUserFromSession(request);
+        UserDto userDto = RequestManager.getUserFromSession(request);
+        User user = new User();
+        Long userId = userDto.getUserId();
+        user.setId(userId);
         receipt.setUser(user);
 
         String quantityParameter = request.getParameter(Receipt.QUANTITY_ALIAS);

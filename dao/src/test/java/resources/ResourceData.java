@@ -14,7 +14,7 @@ public class ResourceData {
     public static final String IS_VALID_INPUT_DATA_METHOD_NAME = "isValidInputData";
     public static final String ENCRYPT_PASSWORD_METHOD_NAME = "encryptPassword";
     public static final String SAMPLE_STRING = "string";
-    public static final String VALID_PATH = "../src/test/java/resources/test.properties";
+    public static final String VALID_PATH = "./src/test/java/resources/test.properties";
     public static final String NULL_OBJECT = null;
     public static final Integer ONE_TIME = 1;
     public static final Integer TWO_TIMES = 2;

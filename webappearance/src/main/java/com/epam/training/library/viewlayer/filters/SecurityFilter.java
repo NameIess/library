@@ -1,8 +1,8 @@
 package com.epam.training.library.viewlayer.filters;
 
+import com.epam.training.library.daolayer.model.dto.impl.UserDto;
 import com.epam.training.library.viewlayer.command.Page;
 import com.epam.training.library.daolayer.model.Role;
-import com.epam.training.library.daolayer.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.epam.training.library.viewlayer.util.RequestManager;
@@ -29,13 +29,11 @@ public class SecurityFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-        Log.debug("Receive user from session");
-        User user = RequestManager.getUserFromSession(request);
+        UserDto userDto = RequestManager.getUserFromSession(request);
         Long userRoleId = Role.ANONYMOUS_ROLE_ID;
-        if (user != null) {
-            Role role = user.getRole();
-            userRoleId = role.getId();
-            Log.debug("User info: " + user);
+        if (userDto != null) {
+            userRoleId = userDto.getRoleId();
+            Log.debug("User info: " + userDto);
         }
 
         Interceptor interceptor = Interceptor.getInstance();

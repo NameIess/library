@@ -1,19 +1,19 @@
 package com.epam.training.library.viewlayer.command;
 
-import com.epam.training.library.viewlayer.command.exception.ActionException;
 import com.epam.training.library.daolayer.model.User;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import com.epam.training.library.daolayer.service.UserService;
 import com.epam.training.library.daolayer.service.exception.BusinessException;
 import com.epam.training.library.daolayer.service.exception.ServiceException;
+import com.epam.training.library.viewlayer.command.exception.ActionException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 public class UserRegistrationCommand extends AbstractActionCommand {
     private static final Logger Log = LogManager.getLogger(UserRegistrationCommand.class.getSimpleName());
-    private static final String ERROR_DUPLICATED_EMAIL_MESSAGE_ATTRIBUTE = "duplicated_email";
+    private static final String ERROR_DUPLICATED_EMAIL_MESSAGE = "duplicated_email";
     private UserService userService;
 
     public UserRegistrationCommand(UserService userService) {
@@ -32,7 +32,7 @@ public class UserRegistrationCommand extends AbstractActionCommand {
             throw new ActionException("Error within UserRegistrationCommand execute(): " + e.getMessage(), e);
         } catch (BusinessException e) {
             Log.error("Registration error: " + e.getMessage());
-            request.setAttribute(ERROR_DUPLICATED_EMAIL_MESSAGE_ATTRIBUTE, Message.DUPLICATED_EMAIL.toString());
+            request.setAttribute(ERROR_DUPLICATED_EMAIL_MESSAGE, Message.DUPLICATED_EMAIL.toString());
             path = buildPathMap(Page.FORWARD, Page.USER_REGISTRATION);
         }
 

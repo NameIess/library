@@ -17,10 +17,9 @@ public class UserSignInValidator implements Verifiable<User> {
     public boolean validate(User user) {
         String email = user.getEmail();
         boolean isEmailValid = isMatches(EMAIL_PATTERN, email);
-        Log.info("Is email valid : " + email + " = " + isEmailValid);
         String password = user.getPassword();
         boolean isPasswordValid = isMatches(PASSWORD_PATTERN, password);
-        Log.info("Is password valid : " + password + " = " + isPasswordValid);
+        Log.info("Is password valid : " + password + " = " + isPasswordValid + "\n" + "Is email valid : " + email + " = " + isEmailValid);
         return isEmailValid && isPasswordValid;
     }
 

@@ -2,6 +2,9 @@ package com.epam.training.library.daolayer.dao.exception;
 
 import java.io.Serializable;
 
+/**
+ * General exception of the DAO layer.
+ */
 public class PersistException extends Exception implements Serializable {
 
     public PersistException() {

@@ -4,7 +4,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 public class PasswordEncoder implements Encryptable {
 
-
     @Override
     public String encryptMd5WithPostfixSalt(String encryptable, String salt) {
         String encodableGroup = encryptable.concat(salt);

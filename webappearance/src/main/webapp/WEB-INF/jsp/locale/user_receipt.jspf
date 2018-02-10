@@ -11,3 +11,4 @@
 <fmt:message bundle="${loc}" key="local.rental_time" var="rental_time"/>
 <fmt:message bundle="${loc}" key="local.delete_request" var="delete_request"/>
 <fmt:message bundle="${loc}" key="local.return_book" var="return_book"/>
+<fmt:message bundle="${loc}" key="local.order_number" var="order_number"/>

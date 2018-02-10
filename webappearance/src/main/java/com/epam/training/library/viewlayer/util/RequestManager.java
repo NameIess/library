@@ -1,6 +1,6 @@
 package com.epam.training.library.viewlayer.util;
 
-import com.epam.training.library.daolayer.model.User;
+import com.epam.training.library.daolayer.model.dto.impl.UserDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -13,14 +13,14 @@ public final class RequestManager {
     private RequestManager() {
     }
 
-    public static User getUserFromSession(HttpServletRequest request) {
+    public static UserDto getUserFromSession(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        User currentUser = null;
+        UserDto currentUser = null;
         if (session != null) {
             Object currentUserWrapper = session.getAttribute(SESSION_USER_ATTRIBUTE);
-            currentUser = (User) currentUserWrapper;
+            currentUser = (UserDto) currentUserWrapper;
         }
-        
+
         return currentUser;
     }
 

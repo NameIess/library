@@ -16,11 +16,11 @@ public class AddBookToCartCommand extends AbstractActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) throws ActionException {
-        String idParameter = request.getParameter(Book.ID_ALIAS);
-        Long id = Long.valueOf(idParameter);
+        String bookIdParameter = request.getParameter(Book.ID_ALIAS);
+        Long bookId = Long.valueOf(bookIdParameter);
 
         try {
-            Book book = bookService.findOneById(id);
+            Book book = bookService.findOneById(bookId);
             request.setAttribute(Book.TABLE_NAME, book);
         } catch (ServiceException e) {
             throw new ActionException("Error within AddBookToCartCommand execute(): " + e.getMessage(), e);

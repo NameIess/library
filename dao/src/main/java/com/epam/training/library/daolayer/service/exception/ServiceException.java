@@ -2,6 +2,9 @@ package com.epam.training.library.daolayer.service.exception;
 
 import java.io.Serializable;
 
+/**
+ * General exception of the Service layer.
+ */
 public class ServiceException extends Exception implements Serializable {
 
     public ServiceException() {

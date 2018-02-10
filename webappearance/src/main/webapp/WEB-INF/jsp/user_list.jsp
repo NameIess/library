@@ -1,12 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ include file="locale/user_list.jspf" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 
 <t:wrapper title="${registred_users}">
     <h2><span>${registred_users}</span></h2>
-    <form name="userListForm" method="POST" action="${pageContext.request.contextPath}/libraryDispatcher">
+    <form name="userListForm" method="POST" action="${contextPath}/libraryDispatcher">
         <table class="table_countable wide_table">
             <thead>
             <tr>
@@ -39,7 +40,7 @@
                     <td>${user.passportNumber}</td>
                     <td>
                         <form name="updateUser" method="POST"
-                              action="${pageContext.request.contextPath}/libraryDispatcher">
+                              action="${contextPath}/libraryDispatcher">
                             <input type="hidden" name="command" value="user_prepare_edit"/>
                             <input type="hidden" name="user_id" value="${user.id}"/>
                             <input class="submit_button small_button" type="submit" value="${edit}"/>
@@ -48,7 +49,7 @@
                     <td>
                         <c:if test="${user.role.id > 1}">
                             <form name="deleteUser" method="POST"
-                                  action="${pageContext.request.contextPath}/libraryDispatcher">
+                                  action="${contextPath}/libraryDispatcher">
                                 <input type="hidden" name="command" value="user_delete"/>
                                 <input type="hidden" name="id" value="${user.id}"/>
                                 <input class="submit_button small_button delete_button" type="submit" value="${delete}"/>

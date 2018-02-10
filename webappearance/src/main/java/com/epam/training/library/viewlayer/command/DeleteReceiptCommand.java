@@ -17,9 +17,9 @@ public class DeleteReceiptCommand extends AbstractActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) throws ActionException {
-        Receipt receipt = parseRequestData(request);
+        Long receiptId = parseRequestData(request);
         try {
-            receiptService.delete(receipt);
+            receiptService.delete(receiptId);
             HttpSession session = request.getSession(false);
             session.setAttribute(Message.SUCCESS.toString(), Message.RECEIPT_DELETED.toString());
         } catch (ServiceException e) {
@@ -30,12 +30,10 @@ public class DeleteReceiptCommand extends AbstractActionCommand {
         return path;
     }
 
-    private Receipt parseRequestData(HttpServletRequest request) {
+    private Long parseRequestData(HttpServletRequest request) {
         String idParameter = request.getParameter(Receipt.ID_ALIAS);
         Long id = Long.valueOf(idParameter);
-        Receipt receipt = new Receipt();
-        receipt.setId(id);
-        return receipt;
+        return id;
     }
 
 }

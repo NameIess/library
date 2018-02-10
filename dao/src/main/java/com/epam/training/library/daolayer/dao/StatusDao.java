@@ -1,5 +1,6 @@
 package com.epam.training.library.daolayer.dao;
 
+import com.epam.training.library.daolayer.connection.ConnectionManager;
 import com.epam.training.library.daolayer.dao.exception.PersistException;
 import com.epam.training.library.daolayer.model.Status;
 
@@ -18,8 +19,8 @@ public class StatusDao extends AbstractDao<Status> {
     private static final String DELETE_QUERY = "DELETE FROM status WHERE id = ?";
 
 
-    public StatusDao(Connection connection) {
-        super(connection);
+    public StatusDao(ConnectionManager connectionManager) {
+        super(connectionManager);
     }
 
     @Override

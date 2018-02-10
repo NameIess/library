@@ -2,6 +2,9 @@ package com.epam.training.library.daolayer.connection.exception;
 
 import java.io.Serializable;
 
+/**
+ * DbConnectionPool error checking wrapper
+ */
 public class DbConnectionPoolException extends RuntimeException implements Serializable {
     public DbConnectionPoolException() {
     }

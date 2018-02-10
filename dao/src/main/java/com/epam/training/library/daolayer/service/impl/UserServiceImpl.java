@@ -28,43 +28,41 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void delete(User user) throws ServiceException {
+    public void delete(Long userId) throws ServiceException {
         try {
-            userDao.delete(user);
-            Log.info("User " + user + " has been removed from DB");
+            userDao.delete(userId);
+            Log.info("User with the id: " + userId + " has been removed from DB");
         } catch (PersistException e) {
             throw new ServiceException("Error within UserService delete(): " + e.getMessage(), e);
         } finally {
-            userDao.releaseConnection();
+            userDao.getConnectionManager().releaseConnection();
         }
     }
 
     @Override
     public User findOneById(Long id) throws ServiceException {
-        User user;
         try {
-            user = userDao.findOne(id);
+            User user = userDao.findOne(id);
             Log.info("User " + user + " has been received from DB by ID - " + id);
+            return user;
         } catch (PersistException e) {
             throw new ServiceException("Error within UserService findOneById(): " + e.getMessage(), e);
         } finally {
-            userDao.releaseConnection();
+            userDao.getConnectionManager().releaseConnection();
         }
-        return user;
     }
 
     @Override
     public List<User> findAll() throws ServiceException {
-        List<User> userList;
         try {
-            userList = userDao.findAll();
+            List<User> userList = userDao.findAll();
             Log.info("Users " + userList + " have been received from DB");
+            return userList;
         } catch (PersistException e) {
             throw new ServiceException("Error within UserService findAll(): " + e.getMessage(), e);
         } finally {
-            userDao.releaseConnection();
+            userDao.getConnectionManager().releaseConnection();
         }
-        return userList;
     }
 
     @Override
@@ -72,58 +70,60 @@ public class UserServiceImpl implements UserService {
         if (!isValidInputData(user)) {
             return null;
         }
-        String encryptedPassword = encryptPassword(user);
-        user.setPassword(encryptedPassword);
-        User registeredUser;
         try {
-            registeredUser = userDao.findOneByMailPass(user);
+            String encryptedPassword = encryptPassword(user);
+            user.setPassword(encryptedPassword);
+            User registeredUser = userDao.findOneByMailPass(user);
             Log.info("Registered user " + registeredUser + " have been received from DB by personal data");
+            return registeredUser;
         } catch (PersistException e) {
             throw new ServiceException("Error within UserService findRegisteredUser(): " + e.getMessage(), e);
         } finally {
-            userDao.releaseConnection();
+            userDao.getConnectionManager().releaseConnection();
         }
-        return registeredUser;
     }
 
 
     @Override
     public void registration(User user) throws ServiceException, BusinessException {
-        String encryptedPassword = encryptPassword(user);
-        user.setPassword(encryptedPassword);
         try {
-            userDao.startTransaction();
+            String encryptedPassword = encryptPassword(user);
+            user.setPassword(encryptedPassword);
+            userDao.getConnectionManager().startTransaction();
             User registeredUser = userDao.findOneByMail(user);
             if (registeredUser == null) {
                 userDao.create(user);
-                userDao.commit();
+                userDao.getConnectionManager().commitTransaction();
 
                 Log.info("User " + user + " has been saved to DB");
             } else {
-                userDao.rollback();
+                userDao.getConnectionManager().rollbackTransaction();
                 throw new BusinessException("The user with this email is registered already");
             }
         } catch (PersistException e) {
-            userDao.rollback();
+            userDao.getConnectionManager().rollbackTransaction();
             throw new ServiceException("Error within UserService save(): " + e.getMessage(), e);
         } finally {
-            userDao.releaseConnection();
+            userDao.getConnectionManager().releaseConnection();
         }
     }
 
     @Override
-    public void update(User user) throws ServiceException {
+    public void update(User updatableUser) throws ServiceException {
         try {
-            userDao.startTransaction();
-            userDao.update(user);
-            userDao.commit();
-
-            Log.info("User has been updated");
+            Long updatedUserId = updatableUser.getId();
+            User userBeforeUpdate = userDao.findOne(updatedUserId);
+            if (!userBeforeUpdate.equals(updatableUser)) {
+                userDao.getConnectionManager().startTransaction();
+                userDao.update(updatableUser);
+                userDao.getConnectionManager().commitTransaction();
+                Log.info("User has been updated to state: " + updatableUser);
+            }
         } catch (PersistException e) {
-            userDao.rollback();
+            userDao.getConnectionManager().rollbackTransaction();
             throw new ServiceException("Error within UserService update(): " + e.getMessage(), e);
         } finally {
-            userDao.releaseConnection();
+            userDao.getConnectionManager().releaseConnection();
         }
     }
 

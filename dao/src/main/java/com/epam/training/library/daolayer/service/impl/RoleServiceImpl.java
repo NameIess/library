@@ -20,58 +20,26 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<Role> findAll() throws ServiceException {
-        List<Role> roleList;
         try {
-            roleList = roleDao.findAll();
+            List<Role> roleList = roleDao.findAll();
+            Log.info("Roles " + roleList + " have been received from DB");
+            return roleList;
         } catch (PersistException e) {
             throw new ServiceException("Error within RoleService findAll(): " + e.getMessage(), e);
         } finally {
-            roleDao.releaseConnection();
+            roleDao.getConnectionManager().releaseConnection();
         }
-        Log.info("Roles " + roleList + " have been received from DB");
-        return roleList;
     }
 
     @Override
     public Role findOneById(Long id) throws ServiceException {
-        Role role;
         try {
-            role = roleDao.findOne(id);
+            Role role = roleDao.findOne(id);
+            return role;
         } catch (PersistException e) {
             throw new ServiceException("Error within RoleService findOneById(): " + e.getMessage(), e);
         } finally {
-            roleDao.releaseConnection();
-        }
-        Log.info("Role " + role + " has been received from DB by ID - " + id);
-        return role;
-    }
-
-    @Override
-    public void update(Role role) throws ServiceException {
-        try {
-            roleDao.startTransaction();
-            roleDao.update(role);
-            roleDao.commit();
-
-            Log.info("Role has been updated");
-        } catch (PersistException e) {
-            roleDao.rollback();
-            throw new ServiceException("Error within RoleService update(): " + e.getMessage(), e);
-        } finally {
-            roleDao.releaseConnection();
-        }
-
-    }
-
-    @Override
-    public void delete(Role role) throws ServiceException {
-        try {
-            roleDao.delete(role);
-            Log.info("Role " + role + " has been removed from DB");
-        } catch (PersistException e) {
-            throw new ServiceException("Error within RoleService delete(): " + e.getMessage(), e);
-        } finally {
-            roleDao.releaseConnection();
+            roleDao.getConnectionManager().releaseConnection();
         }
     }
 }

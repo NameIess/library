@@ -17,9 +17,9 @@ public class DeleteUserCommand extends AbstractActionCommand {
 
     @Override
     public String execute(HttpServletRequest request) throws ActionException {
-        User user = parseRequestData(request);
+        Long userId = parseRequestData(request);
         try {
-            userService.delete(user);
+            userService.delete(userId);
             HttpSession session = request.getSession(false);
             session.setAttribute(Message.SUCCESS.toString(), Message.USER_DELETED.toString());
         } catch (ServiceException e) {
@@ -30,11 +30,10 @@ public class DeleteUserCommand extends AbstractActionCommand {
         return path;
     }
 
-    private User parseRequestData(HttpServletRequest request) {
+    private Long parseRequestData(HttpServletRequest request) {
         String idParameter = request.getParameter(User.ID_ALIAS);
         Long id = Long.valueOf(idParameter);
-        User user = new User();
-        user.setId(id);
-        return user;
+
+        return id;
     }
 }

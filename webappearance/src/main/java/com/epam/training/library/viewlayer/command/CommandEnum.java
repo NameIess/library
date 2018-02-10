@@ -1,83 +1,189 @@
 package com.epam.training.library.viewlayer.command;
 
-import com.epam.training.library.daolayer.dao.BookDao;
-import com.epam.training.library.daolayer.dao.ReceiptDao;
-import com.epam.training.library.daolayer.dao.RoleDao;
-import com.epam.training.library.daolayer.dao.UserDao;
-import com.epam.training.library.daolayer.daofactory.DaoFactory;
-import com.epam.training.library.daolayer.model.Book;
-import com.epam.training.library.daolayer.model.Receipt;
-import com.epam.training.library.daolayer.model.Role;
-import com.epam.training.library.daolayer.model.User;
-import com.epam.training.library.daolayer.service.impl.BookServiceImpl;
-import com.epam.training.library.daolayer.service.impl.ReceiptServiceImpl;
-import com.epam.training.library.daolayer.service.impl.RoleServiceImpl;
-import com.epam.training.library.daolayer.service.impl.UserServiceImpl;
-import com.epam.training.library.daolayer.util.PasswordEncoder;
-import com.epam.training.library.daolayer.validator.UserSignInValidator;
+import com.epam.training.library.daolayer.model.*;
+import com.epam.training.library.daolayer.model.dto.assembler.UserDtoAssembler;
+import com.epam.training.library.daolayer.service.*;
+import com.epam.training.library.daolayer.servicefactory.ServiceManager;
 
 public enum CommandEnum {
 
-    USER_SIGN_OUT(new SignOutCommand()) {
+    USER_SIGN_OUT() {
+        {
+            this.command = new SignOutCommand();
+        }
     },
 
-    LIBRARY_HOME(new BookListCommand(new BookServiceImpl((BookDao) new DaoFactory().getDao(Book.class)))) {
+    LIBRARY_HOME() {
+        {
+            BookService bookService = CommandEnum.getBookService();
+            this.command = new BookListCommand(bookService);
+        }
     },
 
-    USER_SIGN_IN(new AuthorizationCommand(new UserServiceImpl((UserDao) new DaoFactory().getDao(User.class), new PasswordEncoder(), new UserSignInValidator()))) {
+    USER_SIGN_IN() {
+        {
+            UserDtoAssembler assembler = new UserDtoAssembler();
+            UserService userService = CommandEnum.getUserService();
+            this.command = new AuthorizationCommand(userService, assembler);
+        }
     },
 
-    USER_REGISTRATION(new UserRegistrationCommand(new UserServiceImpl((UserDao) new DaoFactory().getDao(User.class), new PasswordEncoder(), new UserSignInValidator()))) {
+    USER_REGISTRATION() {
+        {
+            UserService userService = CommandEnum.getUserService();
+            this.command = new UserRegistrationCommand(userService);
+        }
     },
 
-    USER_PREPARE_EDIT(new UserPrepareUpdateCommand(new UserServiceImpl((UserDao) new DaoFactory().getDao(User.class), new PasswordEncoder(), new UserSignInValidator()), new RoleServiceImpl((RoleDao) new DaoFactory().getDao(Role.class)))) {
+    USER_PREPARE_EDIT() {
+        {
+            UserService userService = CommandEnum.getUserService();
+            RoleService roleService = CommandEnum.getRoleService();
+            this.command = new UserPrepareUpdateCommand(userService, roleService);
+        }
     },
 
-    USER_EDIT(new UserUpdateCommand(new UserServiceImpl((UserDao) new DaoFactory().getDao(User.class), new PasswordEncoder(), new UserSignInValidator()))) {
+    USER_EDIT() {
+        {
+            UserService userService = CommandEnum.getUserService();
+            RoleService roleService = CommandEnum.getRoleService();
+            this.command = new UserUpdateCommand(userService, roleService);
+        }
     },
 
-    SHOW_PAGE(new ChangePageCommand()) {
+    BOOK_PREPARE_EDIT() {
+        {
+            BookService bookService = CommandEnum.getBookService();
+            this.command = new BookPrepareUpdateCommand(bookService);
+        }
     },
 
-    BOOK_ORDER(new BookOrderCommand(new ReceiptServiceImpl((ReceiptDao) new DaoFactory().getDao(Receipt.class), (BookDao) new DaoFactory().getDao(Book.class)))) {
+    BOOK_EDIT() {
+        {
+            BookService bookService = CommandEnum.getBookService();
+            this.command = new BookUpdateCommand(bookService);
+        }
     },
 
-    EMPTY_COMMAND(new EmptyCommand()) {
+    SHOW_PAGE() {
+        {
+            this.command = new ChangePageCommand();
+        }
     },
 
-    ADD_BOOK_TO_CART(new AddBookToCartCommand(new BookServiceImpl((BookDao) new DaoFactory().getDao(Book.class)))) {
+    BOOK_ORDER() {
+        {
+            ReceiptService receiptService = CommandEnum.getReceiptService();
+            this.command = new BookOrderCommand(receiptService);
+        }
     },
 
-    RECEIPT_LIST(new ReceiptListCommand(new ReceiptServiceImpl((ReceiptDao) new DaoFactory().getDao(Receipt.class), (BookDao) new DaoFactory().getDao(Book.class)))) {
+    EMPTY_COMMAND() {
+        {
+            this.command = new EmptyCommand();
+        }
     },
 
-    BOOK_TRANSFER(new TransferBookCommand(new ReceiptServiceImpl((ReceiptDao) new DaoFactory().getDao(Receipt.class), (BookDao) new DaoFactory().getDao(Book.class)))) {
+    ADD_BOOK_TO_CART() {
+        {
+            BookService bookService = CommandEnum.getBookService();
+            this.command = new AddBookToCartCommand(bookService);
+        }
     },
 
-    RECEIPT_DELETE(new DeleteReceiptCommand(new ReceiptServiceImpl((ReceiptDao) new DaoFactory().getDao(Receipt.class), (BookDao) new DaoFactory().getDao(Book.class)))) {
+    RECEIPT_LIST() {
+        {
+            ReceiptService receiptService = CommandEnum.getReceiptService();
+            this.command = new ReceiptListCommand(receiptService);
+        }
     },
 
-    USER_LIST(new UserListCommand(new UserServiceImpl((UserDao) new DaoFactory().getDao(User.class), new PasswordEncoder(), new UserSignInValidator()))) {
+    BOOK_TRANSFER() {
+        {
+            ReceiptService receiptService = CommandEnum.getReceiptService();
+            this.command = new TransferBookCommand(receiptService);
+        }
     },
 
-    USER_DELETE(new DeleteUserCommand(new UserServiceImpl((UserDao) new DaoFactory().getDao(User.class), new PasswordEncoder(), new UserSignInValidator()))) {
+    RECEIPT_DELETE() {
+        {
+            ReceiptService receiptService = CommandEnum.getReceiptService();
+            this.command = new DeleteReceiptCommand(receiptService);
+        }
     },
 
-    USER_RECEIPT(new UserReceiptCommand(new ReceiptServiceImpl((ReceiptDao) new DaoFactory().getDao(Receipt.class), (BookDao) new DaoFactory().getDao(Book.class)))) {
+    USER_LIST() {
+        {
+            UserService userService = CommandEnum.getUserService();
+            this.command = new UserListCommand(userService);
+        }
     },
 
-    CHANGE_LOCALE(new ChangeLocaleCommand()) {
+    USER_DELETE() {
+        {
+            UserService userService = CommandEnum.getUserService();
+            this.command = new DeleteUserCommand(userService);
+        }
+    },
+
+    USER_RECEIPT() {
+        {
+            ReceiptService serviceInstance = CommandEnum.getReceiptService();
+            this.command = new UserReceiptCommand(serviceInstance);
+        }
+    },
+
+    CHANGE_LOCALE() {
+        {
+            this.command = new ChangeLocaleCommand();
+        }
     };
 
-
-    private AbstractActionCommand command;
-
-    CommandEnum(AbstractActionCommand command) {
-        this.command = command;
+    CommandEnum() {
     }
+
+    AbstractActionCommand command;
 
     public AbstractActionCommand getCommand() {
         return command;
     }
 
+    private static BookService bookService;
+    private static UserService userService;
+    private static RoleService roleService;
+    private static ReceiptService receiptService;
+
+    private static BookService getBookService() {
+        if (bookService == null) {
+            bookService = getServiceInstance(Book.class);
+        }
+        return bookService;
+    }
+
+    private static UserService getUserService() {
+        if (userService == null) {
+            userService = getServiceInstance(User.class);
+        }
+        return userService;
+    }
+
+    private static RoleService getRoleService() {
+        if (roleService == null) {
+            roleService = getServiceInstance(Role.class);
+        }
+        return roleService;
+    }
+
+    private static ReceiptService getReceiptService() {
+        if (receiptService == null) {
+            receiptService = getServiceInstance(Receipt.class);
+        }
+        return receiptService;
+    }
+
+    private static <T extends Identified, K extends Service> K getServiceInstance(Class<T> serviceClass) {
+        ServiceManager serviceManager = ServiceManager.getInstance();
+        K service = serviceManager.getService(serviceClass);
+        return service;
+    }
 }

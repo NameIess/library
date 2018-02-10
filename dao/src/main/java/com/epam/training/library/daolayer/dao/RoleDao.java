@@ -1,5 +1,6 @@
 package com.epam.training.library.daolayer.dao;
 
+import com.epam.training.library.daolayer.connection.ConnectionManager;
 import com.epam.training.library.daolayer.dao.exception.PersistException;
 import com.epam.training.library.daolayer.model.Role;
 
@@ -17,8 +18,8 @@ public class RoleDao extends AbstractDao<Role> {
     private static final String UPDATE_QUERY = "UPDATE role SET name = ? WHERE id = ?";
     private static final String DELETE_QUERY = "DELETE FROM role WHERE id = ?";
 
-    public RoleDao(Connection connection) {
-        super(connection);
+    public RoleDao(ConnectionManager connectionManager) {
+        super(connectionManager);
     }
 
     @Override

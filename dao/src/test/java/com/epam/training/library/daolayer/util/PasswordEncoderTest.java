@@ -1,4 +1,4 @@
-package com.epam.training.library.util;
+package com.epam.training.library.daolayer.util;
 
 import com.epam.training.library.daolayer.util.PasswordEncoder;
 import com.tngtech.java.junit.dataprovider.DataProvider;

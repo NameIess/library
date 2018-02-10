@@ -7,11 +7,11 @@ import com.epam.training.library.daolayer.model.Book;
 import com.epam.training.library.daolayer.model.Receipt;
 import com.epam.training.library.daolayer.model.Status;
 import com.epam.training.library.daolayer.model.User;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import com.epam.training.library.daolayer.service.ReceiptService;
 import com.epam.training.library.daolayer.service.exception.BusinessException;
 import com.epam.training.library.daolayer.service.exception.ServiceException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
@@ -28,83 +28,64 @@ public class ReceiptServiceImpl implements ReceiptService {
     @Override
     public void save(Receipt receipt) throws ServiceException {
         try {
-            receiptDao.startTransaction();
+            receiptDao.getConnectionManager().startTransaction();
             receiptDao.create(receipt);
-            receiptDao.commit();
+            receiptDao.getConnectionManager().commitTransaction();
             Log.info("Receipt " + receipt + " has been saved to DB");
         } catch (PersistException e) {
-            receiptDao.rollback();
+            receiptDao.getConnectionManager().rollbackTransaction();
             throw new ServiceException("Error within ReceiptServiceImpl save(): " + e.getMessage(), e);
         } finally {
-            receiptDao.releaseConnection();
+            receiptDao.getConnectionManager().releaseConnection();
         }
     }
 
     @Override
-    public void delete(Receipt receipt) throws ServiceException {
+    public void delete(Long receiptId) throws ServiceException {
         try {
-            receiptDao.delete(receipt);
-            Log.info("Receipt " + receipt + " has been removed from DB");
+            receiptDao.delete(receiptId);
+            Log.info("Receipt with the id: " + receiptId + " has been removed from DB");
         } catch (PersistException e) {
             throw new ServiceException("Error within ReceiptServiceImpl delete(): " + e.getMessage(), e);
         } finally {
-            receiptDao.releaseConnection();
+            receiptDao.getConnectionManager().releaseConnection();
         }
-    }
-
-    @Override
-    public Receipt findOneById(Long id) throws ServiceException {
-        Receipt receipt;
-        try {
-            receipt = receiptDao.findOne(id);
-        } catch (PersistException e) {
-            throw new ServiceException("Error within ReceiptServiceImpl findOneById(): " + e.getMessage(), e);
-        } finally {
-            receiptDao.releaseConnection();
-        }
-        Log.info("Receipt " + receipt + " has been received from DB by ID - " + id);
-        return receipt;
     }
 
     @Override
     public List<Receipt> findAll() throws ServiceException {
-        List<Receipt> receiptList;
         try {
-            receiptList = receiptDao.findAll();
+            List<Receipt> receiptList = receiptDao.findAll();
+            Log.info("Receipts " + receiptList + " have been received from DB");
+            return receiptList;
         } catch (PersistException e) {
             throw new ServiceException("Error within ReceiptServiceImpl findAll(): " + e.getMessage(), e);
         } finally {
-            receiptDao.releaseConnection();
+            receiptDao.getConnectionManager().releaseConnection();
         }
-        Log.info("Receipts " + receiptList + " have been received from DB");
-        return receiptList;
     }
 
     @Override
-    public List<Receipt> findAllByUserId(User user) throws ServiceException {
-        List<Receipt> receiptList;
+    public List<Receipt> findAllByUserId(Long id) throws ServiceException {
         try {
-            Long id = user.getId();
-            receiptList = receiptDao.findAllByUserId(id);
+            List<Receipt> receiptList = receiptDao.findAllByUserId(id);
+            Log.info("Receipts " + receiptList + " have been received from DB by User with id - " + id);
+            return receiptList;
         } catch (PersistException e) {
             throw new ServiceException("Error within ReceiptServiceImpl findAllByUserId(): " + e.getMessage(), e);
         } finally {
-            receiptDao.releaseConnection();
+            receiptDao.getConnectionManager().releaseConnection();
         }
-        Log.info("Receipts " + receiptList + " have been received from DB by User - " + user);
-        return receiptList;
     }
 
     @Override
     public void transferBook(Long receiptId, Long statusId, Long bookId, Integer orderedBookQuantity, Integer availableBookQuantity) throws ServiceException, BusinessException {
         try {
-            receiptDao.startTransaction();
-            bookDao.startTransaction();
+            receiptDao.getConnectionManager().startTransaction();
             int updatedAmount = calculateTransferAmount(orderedBookQuantity, availableBookQuantity, statusId);
             Log.debug("Amount before update = " + availableBookQuantity + ". Ordered amount = " + orderedBookQuantity + ". Updated amount = " + updatedAmount + ".");
             if (updatedAmount < 0) {
-                receiptDao.rollback();
-                bookDao.rollback();
+                bookDao.getConnectionManager().rollbackTransaction();
                 throw new BusinessException("Try to order more books than available");
             }
             Book book = new Book();
@@ -118,15 +99,13 @@ public class ReceiptServiceImpl implements ReceiptService {
             receipt.setStatus(status);
 
             receiptDao.updateStatusById(receipt);
-            receiptDao.commit();
-            bookDao.commit();
+            receiptDao.getConnectionManager().commitTransaction();
+            receiptDao.getConnectionManager().enableAutoCommit();
         } catch (PersistException e) {
-            receiptDao.rollback();
-            bookDao.rollback();
+            receiptDao.getConnectionManager().rollbackTransaction();
             throw new ServiceException("Error within ReceiptServiceImpl transferBook(): " + e.getMessage(), e);
         } finally {
-            receiptDao.releaseConnection();
-            bookDao.releaseConnection();
+            receiptDao.getConnectionManager().releaseConnection();
         }
     }
 
