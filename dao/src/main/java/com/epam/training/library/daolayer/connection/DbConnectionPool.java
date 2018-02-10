@@ -117,10 +117,10 @@ public class DbConnectionPool {
                 } else {
                     connection = DriverManager.getConnection(url, username, password);
                 }
+                Log.debug("Connection has been created: " + connection);
             } catch (SQLException e) {
                 throw new DbConnectionPoolException("Error while creating connection. " + e.getMessage(), e);
             }
-            Log.debug("Connection has been created: " + connection);
             return connection;
         } finally {
             lock.unlock();
