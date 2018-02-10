@@ -9,7 +9,7 @@ public abstract class AbstractActionCommand implements ActionCommand {
     public abstract String execute(HttpServletRequest request) throws ActionException;
 
     protected String buildPathMap(Page actionType, Page pageName) {
-        String path = actionType.toString().concat(pageName.toString());
+        String path = actionType.toString() + pageName.toString();
         return path;
     }
 }
